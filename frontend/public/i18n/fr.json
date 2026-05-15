@@ -1,0 +1,58 @@
+{
+  "common": {
+    "loading": "Chargement…",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "search": "Rechercher",
+    "noData": "Aucune donnée",
+    "error": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "accounts": "Comptes",
+    "transactions": "Transactions",
+    "categories": "Catégories",
+    "import": "Import"
+  },
+  "theme": {
+    "toDark": "Passer au thème sombre",
+    "toLight": "Passer au thème clair"
+  },
+  "auth": {
+    "register": {
+      "title": "Créer un compte",
+      "subtitle": "Rejoignez Account Manager",
+      "emailLabel": "Email",
+      "passwordLabel": "Mot de passe",
+      "confirmPasswordLabel": "Confirmer le mot de passe",
+      "showPassword": "Afficher le mot de passe",
+      "hidePassword": "Masquer le mot de passe",
+      "submit": "Créer mon compte",
+      "loginPrompt": "Déjà un compte ?",
+      "loginLink": "Se connecter"
+    },
+    "login": {
+      "title": "Connexion",
+      "subtitle": "Bienvenue sur Account Manager",
+      "emailLabel": "Email",
+      "passwordLabel": "Mot de passe",
+      "submit": "Se connecter",
+      "registerPrompt": "Pas encore de compte ?",
+      "registerLink": "Créer un compte"
+    },
+    "errors": {
+      "emailRequired": "L'email est requis.",
+      "emailInvalid": "Format d'email invalide.",
+      "passwordRequired": "Le mot de passe est requis.",
+      "passwordMinLength": "Au moins 8 caractères.",
+      "confirmPasswordRequired": "Veuillez confirmer le mot de passe.",
+      "passwordsMismatch": "Les mots de passe ne correspondent pas.",
+      "emailAlreadyUsed": "Cette adresse email est déjà utilisée.",
+      "generic": "Une erreur est survenue. Veuillez réessayer."
+    }
+  }
+}

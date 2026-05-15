@@ -1,0 +1,72 @@
+<mat-sidenav-container class="shell-container">
+  <mat-sidenav
+    class="shell-sidenav"
+    [class.collapsed]="collapsed()"
+    mode="side"
+    opened
+  >
+    <div class="sidenav-header">
+      @if (!collapsed()) {
+        <span class="logo">Account Manager</span>
+      } @else {
+        <span class="logo-icon">AM</span>
+      }
+    </div>
+
+    <mat-nav-list>
+      @for (item of navItems; track item.route) {
+        <a
+          mat-list-item
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [matTooltip]="collapsed() ? (item.labelKey | translate) : ''"
+          matTooltipPosition="right"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          @if (!collapsed()) {
+            <span matListItemTitle>{{ item.labelKey | translate }}</span>
+          }
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="shell-content">
+    <mat-toolbar class="shell-toolbar">
+      <button mat-icon-button (click)="toggleSidebar()" aria-label="Toggle sidebar">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <span class="toolbar-spacer"></span>
+
+      <button
+        mat-icon-button
+        (click)="localeService.toggle()"
+        [attr.aria-label]="localeService.current() === 'fr' ? 'Switch to English' : 'Passer en français'"
+        matTooltip="{{ localeService.current() === 'fr' ? 'English' : 'Français' }}"
+      >
+        <span class="locale-label">{{ localeService.current() | uppercase }}</span>
+      </button>
+
+      <button
+        mat-icon-button
+        (click)="themeService.toggle()"
+        [attr.aria-label]="(themeService.current() === 'theme-dark' ? 'theme.toLight' : 'theme.toDark') | translate"
+      >
+        <mat-icon>{{ themeService.current() === 'theme-dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+
+      <button mat-icon-button aria-label="Notifications">
+        <mat-icon>notifications</mat-icon>
+      </button>
+
+      <button mat-icon-button aria-label="Menu utilisateur">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <main class="shell-main">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

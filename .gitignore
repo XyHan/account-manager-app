@@ -1,0 +1,47 @@
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+out/
+out-tsc/
+tmp/
+
+# Claude Code local settings (permissions are user-specific)
+.claude/settings.local.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Angular cache
+.angular/
+
+# NestJS
+backend/dist/
+
+# pnpm
+.pnpm-store/

@@ -1,0 +1,58 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "back": "Back",
+    "search": "Search",
+    "noData": "No data",
+    "error": "An error occurred. Please try again."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "accounts": "Accounts",
+    "transactions": "Transactions",
+    "categories": "Categories",
+    "import": "Import"
+  },
+  "theme": {
+    "toDark": "Switch to dark theme",
+    "toLight": "Switch to light theme"
+  },
+  "auth": {
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Join Account Manager",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "submit": "Create account",
+      "loginPrompt": "Already have an account?",
+      "loginLink": "Sign in"
+    },
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Welcome to Account Manager",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Sign in",
+      "registerPrompt": "No account yet?",
+      "registerLink": "Create an account"
+    },
+    "errors": {
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Invalid email format.",
+      "passwordRequired": "Password is required.",
+      "passwordMinLength": "At least 8 characters.",
+      "confirmPasswordRequired": "Please confirm your password.",
+      "passwordsMismatch": "Passwords do not match.",
+      "emailAlreadyUsed": "This email address is already used.",
+      "generic": "An error occurred. Please try again."
+    }
+  }
+}

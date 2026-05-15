@@ -1,0 +1,93 @@
+@use '@angular/material' as mat;
+
+// ─── Material M3 base ─────────────────────────────────────────────────────────
+@include mat.core();
+
+// ─── Dark theme palette ───────────────────────────────────────────────────────
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$violet-palette,
+  ),
+  typography: (
+    brand-family: 'Inter, system-ui, sans-serif',
+    plain-family: 'Inter, system-ui, sans-serif',
+  ),
+));
+
+// ─── Light theme palette ──────────────────────────────────────────────────────
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$orange-palette,
+  ),
+  typography: (
+    brand-family: 'Inter, system-ui, sans-serif',
+    plain-family: 'Inter, system-ui, sans-serif',
+  ),
+));
+
+// ─── Design system tokens ─────────────────────────────────────────────────────
+.theme-dark {
+  @include mat.all-component-themes($dark-theme);
+
+  --color-bg: #1a1b2e;
+  --color-surface: #252641;
+  --color-sidebar: #12132a;
+  --color-primary: #6c63ff;
+  --color-primary-hover: #5a52e0;
+  --color-income: #4ade80;
+  --color-expense: #f87171;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-border: #2e3054;
+
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.theme-light {
+  @include mat.all-component-themes($light-theme);
+
+  --color-bg: #faf6f0;
+  --color-surface: #ffffff;
+  --color-sidebar: #f0ebe2;
+  --color-primary: #7c5c3e;
+  --color-primary-hover: #6b4e35;
+  --color-income: #2d7a47;
+  --color-expense: #c0392b;
+  --color-text: #3d3428;
+  --color-text-muted: #8b7355;
+  --color-border: #ddd5c8;
+
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+// ─── Global reset ─────────────────────────────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+// ─── Typography helpers ───────────────────────────────────────────────────────
+.text-muted   { color: var(--color-text-muted); }
+.text-income  { color: var(--color-income); }
+.text-expense { color: var(--color-expense); }
+
+.amount {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 20px;
+}
