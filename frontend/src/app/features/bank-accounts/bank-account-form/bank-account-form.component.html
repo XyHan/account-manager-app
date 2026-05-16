@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>{{ 'bankAccounts.form.title' | translate }}</h2>
+
+<mat-dialog-content>
+  @if (apiError()) {
+    <div class="error-banner">{{ apiError()! | translate }}</div>
+  }
+
+  <form [formGroup]="form" novalidate>
+    <mat-form-field appearance="outline" class="field-full">
+      <mat-label>{{ 'bankAccounts.form.nameLabel' | translate }}</mat-label>
+      <input matInput formControlName="name" autocomplete="off" />
+      @if (form.get('name')?.touched && form.get('name')?.hasError('required')) {
+        <mat-error>{{ 'bankAccounts.form.errors.nameRequired' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field-full">
+      <mat-label>{{ 'bankAccounts.form.bankLabel' | translate }}</mat-label>
+      <input matInput formControlName="bank" autocomplete="off" />
+      @if (form.get('bank')?.touched && form.get('bank')?.hasError('required')) {
+        <mat-error>{{ 'bankAccounts.form.errors.bankRequired' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field-full">
+      <mat-label>{{ 'bankAccounts.form.typeLabel' | translate }}</mat-label>
+      <mat-select formControlName="type">
+        @for (t of accountTypes; track t) {
+          <mat-option [value]="t">{{ 'bankAccounts.types.' + t | translate }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('type')?.touched && form.get('type')?.hasError('required')) {
+        <mat-error>{{ 'bankAccounts.form.errors.typeRequired' | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()" [disabled]="loading()">
+    {{ 'common.cancel' | translate }}
+  </button>
+  <button mat-flat-button type="button" (click)="submit()" [disabled]="loading()">
+    @if (loading()) {
+      <mat-spinner diameter="20" />
+    } @else {
+      {{ 'common.confirm' | translate }}
+    }
+  </button>
+</mat-dialog-actions>

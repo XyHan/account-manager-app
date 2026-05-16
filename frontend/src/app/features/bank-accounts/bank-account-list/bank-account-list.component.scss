@@ -1,0 +1,49 @@
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  color: var(--color-text-muted);
+
+  .empty-icon {
+    font-size: 3rem;
+    height: 3rem;
+    width: 3rem;
+  }
+
+  p { margin: 0; font-size: 1rem; }
+}
+
+.accounts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.account-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+
+  .balance {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text);
+    margin: 0.5rem 0;
+  }
+}
