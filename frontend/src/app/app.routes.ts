@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { ShellComponent } from './shared/components/shell/shell.component';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -13,8 +14,16 @@ export const routes: Routes = [
       import('./features/auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import('./features/auth/callback/auth-callback.component').then(
+        (m) => m.AuthCallbackComponent,
+      ),
+  },
+  {
     path: '',
     component: ShellComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'dashboard',
