@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageBusModule } from '../_shared/infrastructure/message-bus/bridge/message-bus.module';
+import { CommandLogMiddleware } from '../_shared/infrastructure/cqrs/middleware/CommandLogMiddleware';
+import { EventLogMiddleware } from '../_shared/infrastructure/cqrs/middleware/EventLogMiddleware';
+import { CommandLogOrmEntity } from '../_shared/infrastructure/cqrs/orm-entities/CommandLog.orm-entity';
+import { EventLogOrmEntity } from '../_shared/infrastructure/cqrs/orm-entities/EventLog.orm-entity';
 import { UserOrmEntity } from './infrastructure/persistence/orm-entities/UserOrmEntity';
 import { OAuthClientOrmEntity } from './infrastructure/persistence/orm-entities/OAuthClientOrmEntity';
 import { OAuthAuthorizationCodeOrmEntity } from './infrastructure/persistence/orm-entities/OAuthAuthorizationCodeOrmEntity';
@@ -13,16 +17,16 @@ import { FindUserByEmailQueryHandler } from './application/queries/find-user-by-
 import { AuthController } from './presentation/controllers/AuthController';
 import { USER_REPOSITORY } from './domain/repositories/IUserRepository';
 import { USER_FINDER } from './domain/finders/IUserFinder';
-import { CommandDispatcher } from '../_shared/infrastructure/cqrs/middleware/CommandDispatcher';
-import { QueryDispatcher } from '../_shared/infrastructure/cqrs/middleware/QueryDispatcher';
-import { CommandLogOrmEntity } from '../_shared/infrastructure/cqrs/orm-entities/CommandLog.orm-entity';
 
 @Module({
   imports: [
-    MessageBusModule.registerMiddlewares({}),
+    MessageBusModule.registerMiddlewares({
+      commandBus: [CommandLogMiddleware],
+      eventBus: [EventLogMiddleware],
+      imports: [TypeOrmModule.forFeature([CommandLogOrmEntity, EventLogOrmEntity])],
+    }),
     TypeOrmModule.forFeature([
       UserOrmEntity,
-      CommandLogOrmEntity,
       OAuthClientOrmEntity,
       OAuthAuthorizationCodeOrmEntity,
       OAuthTokenOrmEntity,
@@ -32,8 +36,6 @@ import { CommandLogOrmEntity } from '../_shared/infrastructure/cqrs/orm-entities
   providers: [
     RegisterUserCommandHandler,
     FindUserByEmailQueryHandler,
-    CommandDispatcher,
-    QueryDispatcher,
     OAuthService,
     { provide: USER_REPOSITORY, useClass: UserRepository },
     { provide: USER_FINDER, useClass: UserFinder },

@@ -10,8 +10,6 @@ import { OAuthAuthorizationCodeOrmEntity } from './auth/infrastructure/persisten
 import { OAuthTokenOrmEntity } from './auth/infrastructure/persistence/orm-entities/OAuthTokenOrmEntity';
 import { CommandLogOrmEntity } from './_shared/infrastructure/cqrs/orm-entities/CommandLog.orm-entity';
 import { EventLogOrmEntity } from './_shared/infrastructure/cqrs/orm-entities/EventLog.orm-entity';
-import { EventLogSubscriber } from './_shared/infrastructure/cqrs/middleware/EventLogSubscriber';
-import { MessageBusModule } from './_shared/infrastructure/message-bus/bridge/message-bus.module';
 
 @Module({
   imports: [
@@ -38,12 +36,9 @@ import { MessageBusModule } from './_shared/infrastructure/message-bus/bridge/me
         migrationsRun: true,
       }),
     }),
-    TypeOrmModule.forFeature([EventLogOrmEntity]),
-    MessageBusModule.registerMiddlewares({}),
     AuthModule,
   ],
   providers: [
-    EventLogSubscriber,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })

@@ -16,8 +16,9 @@ import {
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
-import { CommandDispatcher } from '../../../_shared/infrastructure/cqrs/middleware/CommandDispatcher';
-import { QueryDispatcher } from '../../../_shared/infrastructure/cqrs/middleware/QueryDispatcher';
+import { lastValueFrom } from 'rxjs';
+import { CommandBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/command.bus';
+import { QueryBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/query.bus';
 import { RegisterUserCommand } from '../../application/commands/register-user/RegisterUserCommand';
 import { FindUserByEmailQuery } from '../../application/queries/find-user-by-email/FindUserByEmailQuery';
 import type { UserReadModel } from '../../domain/models/UserReadModel';
@@ -41,21 +42,17 @@ const REFRESH_TOKEN_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly commandDispatcher: CommandDispatcher,
-    private readonly queryDispatcher: QueryDispatcher,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
     private readonly oauthService: OAuthService,
   ) {}
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto): Promise<object> {
-    await this.commandDispatcher.dispatch(
-      new RegisterUserCommand(dto.id, dto.email, dto.password),
-    );
+    await lastValueFrom(this.commandBus.execute(new RegisterUserCommand(dto.id, dto.email, dto.password)));
 
-    const readModel = await this.queryDispatcher.dispatch<UserReadModel>(
-      new FindUserByEmailQuery(dto.email),
-    );
+    const readModel = await lastValueFrom(this.queryBus.execute(new FindUserByEmailQuery(dto.email))) as UserReadModel;
 
     return UserView.fromReadModel(readModel).serialize();
   }

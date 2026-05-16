@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Module, Type } from '@nestjs/common';
 import type { MiddlewareInterface } from '../middleware/middleware';
 import { MiddlewareStack } from '../middleware/middleware.stack';
 import { CommandBus } from './bus/command.bus';
@@ -8,17 +8,37 @@ import { ModuleRefAdapter } from './adapter/module-ref.adapter';
 
 @Module({})
 export class MessageBusModule {
-  static registerMiddlewares(middlewares: {
-    commandBus?: MiddlewareInterface[];
-    queryBus?: MiddlewareInterface[];
-    eventBus?: MiddlewareInterface[];
+  static registerMiddlewares(options: {
+    commandBus?: Type<MiddlewareInterface>[];
+    queryBus?: Type<MiddlewareInterface>[];
+    eventBus?: Type<MiddlewareInterface>[];
+    imports?: (Type<unknown> | DynamicModule)[];
   }): DynamicModule {
+    const commandMiddlewares = options.commandBus ?? [];
+    const queryMiddlewares = options.queryBus ?? [];
+    const eventMiddlewares = options.eventBus ?? [];
+    const allMiddlewares = [...new Set([...commandMiddlewares, ...queryMiddlewares, ...eventMiddlewares])];
+
     return {
       module: MessageBusModule,
+      imports: options.imports ?? [],
       providers: [
-        { provide: 'COMMAND_BUS_MIDDLEWARES', useValue: new MiddlewareStack(middlewares.commandBus ?? []) },
-        { provide: 'QUERY_BUS_MIDDLEWARES', useValue: new MiddlewareStack(middlewares.queryBus ?? []) },
-        { provide: 'EVENT_BUS_MIDDLEWARES', useValue: new MiddlewareStack(middlewares.eventBus ?? []) },
+        ...allMiddlewares,
+        {
+          provide: 'COMMAND_BUS_MIDDLEWARES',
+          inject: commandMiddlewares,
+          useFactory: (...middlewares: MiddlewareInterface[]) => new MiddlewareStack(middlewares),
+        },
+        {
+          provide: 'QUERY_BUS_MIDDLEWARES',
+          inject: queryMiddlewares,
+          useFactory: (...middlewares: MiddlewareInterface[]) => new MiddlewareStack(middlewares),
+        },
+        {
+          provide: 'EVENT_BUS_MIDDLEWARES',
+          inject: eventMiddlewares,
+          useFactory: (...middlewares: MiddlewareInterface[]) => new MiddlewareStack(middlewares),
+        },
         CommandBus,
         QueryBus,
         EventBus,
