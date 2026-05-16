@@ -1,35 +1,45 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
+import { Subject, of, throwError } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
 import { PkceService } from './pkce.service';
+import { AUTH_REPOSITORY } from '../domain/repositories/IAuthRepository';
 import { environment } from '../../../../environments/environment';
+
+const exchangeCodeSpy = vi.fn().mockReturnValue(of(undefined));
+const refreshTokenSpy = vi.fn().mockReturnValue(of(undefined));
+const meSpy = vi.fn().mockReturnValue(of({ userId: 'uid', role: 'USER', scope: 'app' }));
+
+const authRepositoryStub = {
+  register: vi.fn(),
+  exchangeCode: exchangeCodeSpy,
+  refreshToken: refreshTokenSpy,
+  me: meSpy,
+};
 
 describe('AuthService', () => {
   let service: AuthService;
-  let httpMock: HttpTestingController;
   let pkceService: PkceService;
 
   beforeEach(() => {
+    exchangeCodeSpy.mockReset().mockReturnValue(of(undefined));
+    refreshTokenSpy.mockReset().mockReturnValue(of(undefined));
+    meSpy.mockReset().mockReturnValue(of({ userId: 'uid', role: 'USER', scope: 'app' }));
+
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
         provideRouter([]),
+        { provide: AUTH_REPOSITORY, useValue: authRepositoryStub },
       ],
     });
+
     service = TestBed.inject(AuthService);
-    httpMock = TestBed.inject(HttpTestingController);
     pkceService = TestBed.inject(PkceService);
     sessionStorage.clear();
   });
 
-  afterEach(() => {
-    httpMock.verify();
-    sessionStorage.clear();
-  });
+  afterEach(() => sessionStorage.clear());
 
   describe('exchangeCode', () => {
     it('returns error when PKCE session is missing', async () => {
@@ -45,78 +55,57 @@ describe('AuthService', () => {
       );
     });
 
-    it('POSTs to /auth/token with correct payload when state matches', () => {
+    it('calls authRepository.exchangeCode with correct params when state matches', async () => {
       pkceService.storeSession('my-verifier', 'my-state');
+      await firstValueFrom(service.exchangeCode('auth-code', 'my-state'));
 
-      service.exchangeCode('auth-code', 'my-state').subscribe();
-
-      const req = httpMock.expectOne(`${environment.apiUrl}/auth/token`);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({
-        grant_type: 'authorization_code',
-        code: 'auth-code',
-        code_verifier: 'my-verifier',
-        client_id: environment.oauthClientId,
-        redirect_uri: `${environment.frontUrl}/auth/callback`,
-      });
-      req.flush({});
+      expect(exchangeCodeSpy).toHaveBeenCalledWith(
+        'auth-code',
+        'my-verifier',
+        environment.oauthClientId,
+        `${environment.frontUrl}/auth/callback`,
+      );
     });
 
-    it('clears the PKCE session after a successful exchange', () => {
+    it('clears the PKCE session after delegating to the repository', async () => {
       pkceService.storeSession('my-verifier', 'my-state');
-      service.exchangeCode('auth-code', 'my-state').subscribe();
-      httpMock.expectOne(`${environment.apiUrl}/auth/token`).flush({});
+      await firstValueFrom(service.exchangeCode('auth-code', 'my-state'));
       expect(pkceService.consumeSession()).toBeNull();
     });
   });
 
   describe('refresh', () => {
-    it('POSTs to /auth/token with grant_type=refresh_token', () => {
-      service.refresh().subscribe();
-      const req = httpMock.expectOne(`${environment.apiUrl}/auth/token`);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({ grant_type: 'refresh_token' });
-      req.flush({});
+    it('delegates to authRepository.refreshToken', async () => {
+      await firstValueFrom(service.refresh());
+      expect(refreshTokenSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('returns an observable that completes on success', async () => {
-      const resultPromise = firstValueFrom(service.refresh());
-      httpMock.expectOne(`${environment.apiUrl}/auth/token`).flush({});
-      // void observable — just assert it resolves without rejection
-      await resultPromise;
-      expect(true).toBe(true);
+    it('propagates error when refreshToken fails', async () => {
+      refreshTokenSpy.mockReturnValue(throwError(() => new Error('Unauthorized')));
+      await expect(firstValueFrom(service.refresh())).rejects.toThrow('Unauthorized');
     });
 
-    it('propagates error when refresh fails', async () => {
-      const result = firstValueFrom(service.refresh());
-      httpMock.expectOne(`${environment.apiUrl}/auth/token`).flush('', { status: 401, statusText: 'Unauthorized' });
-      await expect(result).rejects.toBeTruthy();
-    });
+    it('calls refreshToken only once when called concurrently', () => {
+      const subject = new Subject<void>();
+      refreshTokenSpy.mockReturnValue(subject.asObservable());
 
-    it('does not make a second HTTP call when a refresh is already in progress', () => {
-      // Start two parallel refreshes
       service.refresh().subscribe();
       service.refresh().subscribe();
-      // Only one HTTP request should have been made
-      httpMock.expectOne(`${environment.apiUrl}/auth/token`).flush({});
+      expect(refreshTokenSpy).toHaveBeenCalledTimes(1);
+
+      subject.next();
+      subject.complete();
     });
   });
 
   describe('isAuthenticated', () => {
-    it('returns true when GET /auth/me succeeds', async () => {
-      const result = firstValueFrom(service.isAuthenticated());
-      httpMock.expectOne(`${environment.apiUrl}/auth/me`).flush({
-        userId: 'uid',
-        role: 'USER',
-        scope: 'app',
-      });
-      expect(await result).toBe(true);
+    it('returns true when me() succeeds', async () => {
+      expect(await firstValueFrom(service.isAuthenticated())).toBe(true);
     });
 
-    it('returns false when GET /auth/me returns 401', async () => {
-      const result = firstValueFrom(service.isAuthenticated());
-      httpMock.expectOne(`${environment.apiUrl}/auth/me`).flush('', { status: 401, statusText: 'Unauthorized' });
-      expect(await result).toBe(false);
+    it('returns false when me() fails', async () => {
+      meSpy.mockReturnValue(throwError(() => new Error('Unauthorized')));
+      expect(await firstValueFrom(service.isAuthenticated())).toBe(false);
     });
   });
 });

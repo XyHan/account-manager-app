@@ -1,19 +1,20 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, Inject, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, catchError, filter, map, of, switchMap, take, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, filter, map, of, take, tap, throwError } from 'rxjs';
 import { PkceService } from './pkce.service';
+import { AUTH_REPOSITORY, type IAuthRepository } from '../domain/repositories/IAuthRepository';
 import type { MeView } from '../domain/models/MeView';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly pkceService = inject(PkceService);
 
   private isRefreshing = false;
   private readonly tokenRefreshed$ = new BehaviorSubject<boolean>(false);
+
+  constructor(@Inject(AUTH_REPOSITORY) private readonly authRepository: IAuthRepository) {}
 
   private get redirectUri(): string {
     return `${environment.frontUrl}/auth/callback`;
@@ -47,21 +48,16 @@ export class AuthService {
       return throwError(() => new Error('État CSRF invalide — tentative de connexion rejetée'));
     }
 
-    return this.http.post<void>(
-      `${environment.apiUrl}/auth/token`,
-      {
-        grant_type: 'authorization_code',
-        code,
-        code_verifier: session.verifier,
-        client_id: environment.oauthClientId,
-        redirect_uri: this.redirectUri,
-      },
+    return this.authRepository.exchangeCode(
+      code,
+      session.verifier,
+      environment.oauthClientId,
+      this.redirectUri,
     );
   }
 
   refresh(): Observable<void> {
     if (this.isRefreshing) {
-      // Another refresh is in progress — wait for it to complete then signal success
       return this.tokenRefreshed$.pipe(
         filter(Boolean),
         take(1),
@@ -72,7 +68,7 @@ export class AuthService {
     this.isRefreshing = true;
     this.tokenRefreshed$.next(false);
 
-    return this.http.post<void>(`${environment.apiUrl}/auth/token`, { grant_type: 'refresh_token' }).pipe(
+    return this.authRepository.refreshToken().pipe(
       tap(() => {
         this.isRefreshing = false;
         this.tokenRefreshed$.next(true);
@@ -86,7 +82,7 @@ export class AuthService {
   }
 
   me(): Observable<MeView> {
-    return this.http.get<MeView>(`${environment.apiUrl}/auth/me`);
+    return this.authRepository.me();
   }
 
   isAuthenticated(): Observable<boolean> {

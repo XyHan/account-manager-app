@@ -6,6 +6,8 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { credentialsInterceptor } from './core/interceptors/credentials.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { AUTH_REPOSITORY } from './features/auth/domain/repositories/IAuthRepository';
+import { HttpAuthRepository } from './features/auth/infrastructure/repositories/HttpAuthRepository';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -14,6 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor, errorInterceptor])),
+    { provide: AUTH_REPOSITORY, useClass: HttpAuthRepository },
     ...provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
     provideTranslateService({ defaultLanguage: 'fr' }),
   ],
