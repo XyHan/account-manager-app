@@ -53,8 +53,18 @@ export class AuthCallbackComponent implements OnInit {
     }
 
     this.authService.exchangeCode(code, state).subscribe({
-      next: () => void this.router.navigateByUrl('/dashboard'),
+      next: () => this.redirectToDashboard(),
       error: (err: Error) => this.fail(err.message),
+    });
+  }
+
+  private redirectToDashboard(): void {
+    this.router.navigateByUrl('/dashboard', { replaceUrl: true }).then((navigated) => {
+      if (!navigated) {
+        window.location.replace('/dashboard');
+      }
+    }).catch(() => {
+      window.location.replace('/dashboard');
     });
   }
 

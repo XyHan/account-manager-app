@@ -65,8 +65,9 @@ describe('AuthCallbackComponent', () => {
     const fixture = createFixture();
     await fixture.whenStable();
 
-    expect(navigateSpy).toHaveBeenCalledWith('/dashboard');
+    expect(navigateSpy).toHaveBeenCalledWith('/dashboard', { replaceUrl: true });
   });
+
 
   it('shows error message when exchangeCode fails', async () => {
     exchangeCodeSpy.mockReturnValue(throwError(() => new Error('CSRF invalide')));
@@ -83,8 +84,8 @@ describe('AuthCallbackComponent', () => {
   it('calls exchangeCode with correct params from query string', async () => {
     const router = setupModule({ code: 'my-code', state: 'my-state' });
     vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
-    createFixture();
-    await Promise.resolve();
+    const fixture = createFixture();
+    await fixture.whenStable();
 
     expect(exchangeCodeSpy).toHaveBeenCalledWith('my-code', 'my-state');
   });
