@@ -50,6 +50,7 @@ export class ShellComponent {
     { icon: 'receipt_long', labelKey: 'nav.transactions', route: '/transactions' },
     { icon: 'label', labelKey: 'nav.categories', route: '/categories' },
     { icon: 'upload_file', labelKey: 'nav.import', route: '/import' },
+    { icon: 'manage_accounts', labelKey: 'nav.profile', route: '/profile/change-password' },
   ];
 
   toggleSidebar(): void {

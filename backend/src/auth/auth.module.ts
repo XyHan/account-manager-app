@@ -13,6 +13,7 @@ import { UserRepository } from './infrastructure/persistence/repositories/UserRe
 import { UserFinder } from './infrastructure/persistence/finders/UserFinder';
 import { OAuthService } from './infrastructure/oauth/OAuthService';
 import { RegisterUserCommandHandler } from './application/commands/register-user/RegisterUserCommandHandler';
+import { ChangePasswordCommandHandler } from './application/commands/change-password/ChangePasswordCommandHandler';
 import { FindUserByEmailQueryHandler } from './application/queries/find-user-by-email/FindUserByEmailQueryHandler';
 import { AuthController } from './presentation/controllers/AuthController';
 import { USER_REPOSITORY } from './domain/repositories/IUserRepository';
@@ -35,6 +36,7 @@ import { USER_FINDER } from './domain/finders/IUserFinder';
   controllers: [AuthController],
   providers: [
     RegisterUserCommandHandler,
+    ChangePasswordCommandHandler,
     FindUserByEmailQueryHandler,
     OAuthService,
     { provide: USER_REPOSITORY, useClass: UserRepository },

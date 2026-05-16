@@ -8,6 +8,7 @@ export interface IAuthRepository {
   exchangeCode(code: string, codeVerifier: string, clientId: string, redirectUri: string): Observable<void>;
   refreshToken(): Observable<void>;
   logout(): Observable<void>;
+  changePassword(currentPassword: string, newPassword: string): Observable<void>;
   me(): Observable<MeView>;
 }
 

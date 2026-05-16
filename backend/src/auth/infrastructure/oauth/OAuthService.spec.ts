@@ -222,6 +222,14 @@ describe('OAuthService', () => {
     });
   });
 
+  describe('revokeAllUserTokens', () => {
+    it('revokes all active tokens for a given user', async () => {
+      tokenRepo.update.mockResolvedValue(undefined);
+      await service.revokeAllUserTokens('uid-123');
+      expect(tokenRepo.update).toHaveBeenCalledWith({ userId: 'uid-123', revoked: false }, { revoked: true });
+    });
+  });
+
   describe('revokeToken', () => {
     it('throws when token not found', async () => {
       tokenRepo.findOne.mockResolvedValue(null);

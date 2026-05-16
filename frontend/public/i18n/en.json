@@ -17,11 +17,28 @@
     "transactions": "Transactions",
     "categories": "Categories",
     "import": "Import",
+    "profile": "Profile",
     "logout": "Sign out"
   },
   "theme": {
     "toDark": "Switch to dark theme",
     "toLight": "Switch to light theme"
+  },
+  "profile": {
+    "changePassword": {
+      "title": "Change password",
+      "subtitle": "Your new password must contain at least 8 characters.",
+      "currentPasswordLabel": "Current password",
+      "newPasswordLabel": "New password",
+      "confirmNewPasswordLabel": "Confirm new password",
+      "submit": "Change password",
+      "errors": {
+        "currentPasswordRequired": "Current password is required.",
+        "newPasswordRequired": "New password is required.",
+        "confirmNewPasswordRequired": "Please confirm your new password.",
+        "wrongCurrentPassword": "Current password is incorrect."
+      }
+    }
   },
   "auth": {
     "register": {

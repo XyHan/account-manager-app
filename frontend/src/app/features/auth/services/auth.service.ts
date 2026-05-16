@@ -85,6 +85,10 @@ export class AuthService {
     return this.authRepository.me();
   }
 
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    return this.authRepository.changePassword(currentPassword, newPassword);
+  }
+
   isAuthenticated(): Observable<boolean> {
     return this.me().pipe(
       map(() => true),

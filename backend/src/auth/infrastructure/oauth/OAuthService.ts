@@ -219,6 +219,10 @@ export class OAuthService {
     };
   }
 
+  async revokeAllUserTokens(userId: string): Promise<void> {
+    await this.tokenRepo.update({ userId, revoked: false }, { revoked: true });
+  }
+
   async revokeToken(accessToken: string): Promise<void> {
     const token = await this.tokenRepo.findOne({ where: { accessToken } });
     if (!token) throw new UnauthorizedException('Token not found');
