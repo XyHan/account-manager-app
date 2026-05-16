@@ -18,6 +18,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor, errorInterceptor])),
     { provide: AUTH_REPOSITORY, useClass: HttpAuthRepository },
     ...provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
-    provideTranslateService({ defaultLanguage: 'fr' }),
+    provideTranslateService({ lang: 'fr' }),
   ],
 };
