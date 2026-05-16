@@ -70,6 +70,38 @@ describe('AuthService', () => {
     });
   });
 
+  describe('refresh', () => {
+    it('POSTs to /auth/token with grant_type=refresh_token', () => {
+      service.refresh().subscribe();
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/token`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ grant_type: 'refresh_token' });
+      req.flush({});
+    });
+
+    it('returns an observable that completes on success', async () => {
+      const resultPromise = firstValueFrom(service.refresh());
+      httpMock.expectOne(`${environment.apiUrl}/auth/token`).flush({});
+      // void observable — just assert it resolves without rejection
+      await resultPromise;
+      expect(true).toBe(true);
+    });
+
+    it('propagates error when refresh fails', async () => {
+      const result = firstValueFrom(service.refresh());
+      httpMock.expectOne(`${environment.apiUrl}/auth/token`).flush('', { status: 401, statusText: 'Unauthorized' });
+      await expect(result).rejects.toBeTruthy();
+    });
+
+    it('does not make a second HTTP call when a refresh is already in progress', () => {
+      // Start two parallel refreshes
+      service.refresh().subscribe();
+      service.refresh().subscribe();
+      // Only one HTTP request should have been made
+      httpMock.expectOne(`${environment.apiUrl}/auth/token`).flush({});
+    });
+  });
+
   describe('isAuthenticated', () => {
     it('returns true when GET /auth/me succeeds', async () => {
       const result = firstValueFrom(service.isAuthenticated());

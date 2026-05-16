@@ -11,6 +11,7 @@ import {
   Query,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
@@ -117,39 +118,57 @@ export class AuthController {
   async token(
     @Body() dto: TokenDto,
     @Ip() ip: string,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<object> {
-    if (dto.grant_type !== 'authorization_code') {
-      throw new BadRequestException('Unsupported grant_type');
-    }
-
-    const tokenResult = await this.oauthService.exchangeCodeForToken(
-      dto.code,
-      dto.code_verifier,
-      dto.client_id,
-      dto.redirect_uri,
-      ip,
-    );
-
     const isProduction = process.env.NODE_ENV === 'production';
 
-    res.cookie('X-Access-Token', tokenResult.accessToken, {
+    if (dto.grant_type === 'authorization_code') {
+      if (!dto.code || !dto.code_verifier || !dto.client_id || !dto.redirect_uri) {
+        throw new BadRequestException('Missing required fields for authorization_code grant');
+      }
+
+      const tokenResult = await this.oauthService.exchangeCodeForToken(
+        dto.code,
+        dto.code_verifier,
+        dto.client_id,
+        dto.redirect_uri,
+        ip,
+      );
+
+      this.setTokenCookies(res, tokenResult.accessToken, tokenResult.refreshToken, isProduction);
+      return { ok: true };
+    }
+
+    if (dto.grant_type === 'refresh_token') {
+      const refreshToken = (req as Request & { cookies: Record<string, string> }).cookies?.['X-Refresh-Token'];
+      if (!refreshToken) {
+        throw new UnauthorizedException('Refresh token cookie missing');
+      }
+
+      const tokenResult = await this.oauthService.refreshAccessToken(refreshToken, ip);
+      this.setTokenCookies(res, tokenResult.accessToken, tokenResult.refreshToken, isProduction);
+      return { ok: true };
+    }
+
+    throw new BadRequestException('Unsupported grant_type');
+  }
+
+  private setTokenCookies(res: Response, accessToken: string, refreshToken: string, secure: boolean): void {
+    res.cookie('X-Access-Token', accessToken, {
       httpOnly: true,
-      secure: isProduction,
+      secure,
       sameSite: 'strict',
       maxAge: ACCESS_TOKEN_MAX_AGE,
       path: '/',
     });
-
-    res.cookie('X-Refresh-Token', tokenResult.refreshToken, {
+    res.cookie('X-Refresh-Token', refreshToken, {
       httpOnly: true,
-      secure: isProduction,
+      secure,
       sameSite: 'strict',
       maxAge: REFRESH_TOKEN_MAX_AGE,
       path: '/auth/token',
     });
-
-    return { ok: true };
   }
 
   @Get('me')
