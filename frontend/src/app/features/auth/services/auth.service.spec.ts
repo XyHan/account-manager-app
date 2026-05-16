@@ -10,6 +10,7 @@ import { environment } from '../../../../environments/environment';
 const exchangeCodeSpy = vi.fn().mockReturnValue(of(undefined));
 const refreshTokenSpy = vi.fn().mockReturnValue(of(undefined));
 const logoutSpy = vi.fn().mockReturnValue(of(undefined));
+const changePasswordSpy = vi.fn().mockReturnValue(of(undefined));
 const meSpy = vi.fn().mockReturnValue(of({ userId: 'uid', role: 'USER', scope: 'app' }));
 
 const authRepositoryStub = {
@@ -17,6 +18,7 @@ const authRepositoryStub = {
   exchangeCode: exchangeCodeSpy,
   refreshToken: refreshTokenSpy,
   logout: logoutSpy,
+  changePassword: changePasswordSpy,
   me: meSpy,
 };
 
@@ -28,6 +30,7 @@ describe('AuthService', () => {
     exchangeCodeSpy.mockReset().mockReturnValue(of(undefined));
     refreshTokenSpy.mockReset().mockReturnValue(of(undefined));
     logoutSpy.mockReset().mockReturnValue(of(undefined));
+    changePasswordSpy.mockReset().mockReturnValue(of(undefined));
     meSpy.mockReset().mockReturnValue(of({ userId: 'uid', role: 'USER', scope: 'app' }));
 
     TestBed.configureTestingModule({
@@ -122,6 +125,18 @@ describe('AuthService', () => {
       service.logout();
       await new Promise<void>((r) => setTimeout(r, 0));
       expect(navigateSpy).toHaveBeenCalledWith('/login');
+    });
+  });
+
+  describe('changePassword', () => {
+    it('delegates to authRepository.changePassword with correct params', async () => {
+      await firstValueFrom(service.changePassword('OldPass1', 'NewPass2'));
+      expect(changePasswordSpy).toHaveBeenCalledWith('OldPass1', 'NewPass2');
+    });
+
+    it('propagates error when changePassword fails', async () => {
+      changePasswordSpy.mockReturnValue(throwError(() => new Error('Unauthorized')));
+      await expect(firstValueFrom(service.changePassword('wrong', 'NewPass2'))).rejects.toThrow('Unauthorized');
     });
   });
 

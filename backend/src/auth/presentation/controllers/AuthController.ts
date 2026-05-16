@@ -7,6 +7,7 @@ import {
   HttpCode,
   HttpStatus,
   Ip,
+  Patch,
   Post,
   Query,
   Req,
@@ -20,6 +21,8 @@ import { lastValueFrom } from 'rxjs';
 import { CommandBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/command.bus';
 import { QueryBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/query.bus';
 import { RegisterUserCommand } from '../../application/commands/register-user/RegisterUserCommand';
+import { ChangePasswordCommand } from '../../application/commands/change-password/ChangePasswordCommand';
+import { ChangePasswordDto } from '../dto/ChangePasswordDto';
 import { FindUserByEmailQuery } from '../../application/queries/find-user-by-email/FindUserByEmailQuery';
 import type { UserReadModel } from '../../domain/models/UserReadModel';
 import { UserView } from '../view/UserView';
@@ -172,6 +175,21 @@ export class AuthController {
       maxAge: REFRESH_TOKEN_MAX_AGE,
       path: '/auth/token',
     });
+  }
+
+  @Patch('change-password')
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
+  @UseGuards(OAuthGuard, ScopesGuard, RolesGuard)
+  @Scopes('app')
+  @Roles(RoleEnum.USER, RoleEnum.ADMIN)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async changePassword(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<void> {
+    await lastValueFrom(
+      this.commandBus.execute(new ChangePasswordCommand(req.user.userId, dto.currentPassword, dto.newPassword)),
+    );
   }
 
   @Post('logout')

@@ -32,6 +32,10 @@ export class HttpAuthRepository implements IAuthRepository {
     return this.http.post<void>(`${environment.apiUrl}/auth/logout`, {});
   }
 
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    return this.http.patch<void>(`${environment.apiUrl}/auth/change-password`, { currentPassword, newPassword });
+  }
+
   me(): Observable<MeView> {
     return this.http.get<MeView>(`${environment.apiUrl}/auth/me`);
   }

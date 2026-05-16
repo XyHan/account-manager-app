@@ -3,6 +3,7 @@ import { Email } from '../value-objects/Email';
 import { HashedPassword } from '../value-objects/HashedPassword';
 import { Role } from '../value-objects/Role';
 import { UserId } from '../value-objects/UserId';
+import { PasswordChanged } from '../events/PasswordChanged';
 import { UserRegistered } from '../events/UserRegistered';
 
 export class User {
@@ -37,6 +38,11 @@ export class User {
   get passwordHash(): HashedPassword { return this._passwordHash; }
   get role(): Role { return this._role; }
   get createdAt(): Date { return this._createdAt; }
+
+  changePassword(newPasswordHash: HashedPassword): void {
+    this._passwordHash = newPasswordHash;
+    this.addDomainEvent(new PasswordChanged(this._id.toString()));
+  }
 
   pullDomainEvents(): EventInterface[] {
     const events = [...this.domainEvents];

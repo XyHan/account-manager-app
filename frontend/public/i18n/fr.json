@@ -17,11 +17,28 @@
     "transactions": "Transactions",
     "categories": "Catégories",
     "import": "Import",
+    "profile": "Profil",
     "logout": "Déconnexion"
   },
   "theme": {
     "toDark": "Passer au thème sombre",
     "toLight": "Passer au thème clair"
+  },
+  "profile": {
+    "changePassword": {
+      "title": "Changer de mot de passe",
+      "subtitle": "Votre nouveau mot de passe doit contenir au moins 8 caractères.",
+      "currentPasswordLabel": "Mot de passe actuel",
+      "newPasswordLabel": "Nouveau mot de passe",
+      "confirmNewPasswordLabel": "Confirmer le nouveau mot de passe",
+      "submit": "Changer le mot de passe",
+      "errors": {
+        "currentPasswordRequired": "Le mot de passe actuel est requis.",
+        "newPasswordRequired": "Le nouveau mot de passe est requis.",
+        "confirmNewPasswordRequired": "Veuillez confirmer le nouveau mot de passe.",
+        "wrongCurrentPassword": "Mot de passe actuel incorrect."
+      }
+    }
   },
   "auth": {
     "register": {
