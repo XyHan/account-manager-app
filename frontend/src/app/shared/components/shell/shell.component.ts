@@ -46,7 +46,7 @@ export class ShellComponent {
 
   protected readonly navItems: NavItem[] = [
     { icon: 'dashboard', labelKey: 'nav.dashboard', route: '/dashboard' },
-    { icon: 'account_balance', labelKey: 'nav.accounts', route: '/accounts' },
+    { icon: 'account_balance', labelKey: 'nav.accounts', route: '/bank-accounts' },
     { icon: 'receipt_long', labelKey: 'nav.transactions', route: '/transactions' },
     { icon: 'label', labelKey: 'nav.categories', route: '/categories' },
     { icon: 'upload_file', labelKey: 'nav.import', route: '/import' },

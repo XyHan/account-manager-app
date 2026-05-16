@@ -40,6 +40,31 @@
       }
     }
   },
+  "bankAccounts": {
+    "list": {
+      "title": "Mes comptes bancaires",
+      "addButton": "Ajouter un compte",
+      "empty": "Vous n'avez pas encore de compte bancaire.",
+      "createSuccess": "Compte bancaire créé avec succès."
+    },
+    "form": {
+      "title": "Ajouter un compte bancaire",
+      "nameLabel": "Nom du compte",
+      "bankLabel": "Banque",
+      "typeLabel": "Type de compte",
+      "errors": {
+        "nameRequired": "Le nom du compte est requis.",
+        "bankRequired": "La banque est requise.",
+        "typeRequired": "Le type de compte est requis.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
+    "types": {
+      "CHECKING": "Compte courant",
+      "SAVINGS": "Livret / Épargne",
+      "OTHER": "Autre"
+    }
+  },
   "auth": {
     "register": {
       "title": "Créer un compte",

@@ -4,7 +4,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
+import { BankAccountModule } from './bank-account/bank-account.module';
 import { UserOrmEntity } from './auth/infrastructure/persistence/orm-entities/UserOrmEntity';
+import { BankAccountOrmEntity } from './bank-account/infrastructure/persistence/orm-entities/BankAccountOrmEntity';
 import { OAuthClientOrmEntity } from './auth/infrastructure/persistence/orm-entities/OAuthClientOrmEntity';
 import { OAuthAuthorizationCodeOrmEntity } from './auth/infrastructure/persistence/orm-entities/OAuthAuthorizationCodeOrmEntity';
 import { OAuthTokenOrmEntity } from './auth/infrastructure/persistence/orm-entities/OAuthTokenOrmEntity';
@@ -31,12 +33,14 @@ import { EventLogOrmEntity } from './_shared/infrastructure/cqrs/orm-entities/Ev
           OAuthTokenOrmEntity,
           CommandLogOrmEntity,
           EventLogOrmEntity,
+          BankAccountOrmEntity,
         ],
         migrations: ['dist/database/migrations/*.js'],
         migrationsRun: true,
       }),
     }),
     AuthModule,
+    BankAccountModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

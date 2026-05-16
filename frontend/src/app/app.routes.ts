@@ -31,6 +31,13 @@ export const routes: Routes = [
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
       },
       {
+        path: 'bank-accounts',
+        loadComponent: () =>
+          import('./features/bank-accounts/bank-account-list/bank-account-list.component').then(
+            (m) => m.BankAccountListComponent,
+          ),
+      },
+      {
         path: 'profile/change-password',
         loadComponent: () =>
           import('./features/profile/change-password/change-password.component').then(

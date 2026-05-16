@@ -40,6 +40,31 @@
       }
     }
   },
+  "bankAccounts": {
+    "list": {
+      "title": "My bank accounts",
+      "addButton": "Add an account",
+      "empty": "You don't have any bank account yet.",
+      "createSuccess": "Bank account created successfully."
+    },
+    "form": {
+      "title": "Add a bank account",
+      "nameLabel": "Account name",
+      "bankLabel": "Bank",
+      "typeLabel": "Account type",
+      "errors": {
+        "nameRequired": "Account name is required.",
+        "bankRequired": "Bank is required.",
+        "typeRequired": "Account type is required.",
+        "generic": "An error occurred. Please try again."
+      }
+    },
+    "types": {
+      "CHECKING": "Checking account",
+      "SAVINGS": "Savings account",
+      "OTHER": "Other"
+    }
+  },
   "auth": {
     "register": {
       "title": "Create an account",
