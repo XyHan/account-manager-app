@@ -19,6 +19,9 @@ tmp/
 # Claude Code local settings (permissions are user-specific)
 .claude/settings.local.json
 
+# AI tooling (local config, not shared)
+.ai/
+
 # IDE
 .idea/
 .vscode/
