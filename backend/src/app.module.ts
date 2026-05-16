@@ -1,8 +1,13 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
 import { UserOrmEntity } from './auth/infrastructure/persistence/orm-entities/UserOrmEntity';
+import { OAuthClientOrmEntity } from './auth/infrastructure/persistence/orm-entities/OAuthClientOrmEntity';
+import { OAuthAuthorizationCodeOrmEntity } from './auth/infrastructure/persistence/orm-entities/OAuthAuthorizationCodeOrmEntity';
+import { OAuthTokenOrmEntity } from './auth/infrastructure/persistence/orm-entities/OAuthTokenOrmEntity';
 import { CommandLogOrmEntity } from './_shared/infrastructure/cqrs/orm-entities/CommandLog.orm-entity';
 import { EventLogOrmEntity } from './_shared/infrastructure/cqrs/orm-entities/EventLog.orm-entity';
 import { EventLogSubscriber } from './_shared/infrastructure/cqrs/middleware/EventLogSubscriber';
@@ -11,6 +16,7 @@ import { MessageBusModule } from './_shared/infrastructure/message-bus/bridge/me
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 60 }]),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -20,7 +26,14 @@ import { MessageBusModule } from './_shared/infrastructure/message-bus/bridge/me
         username: config.get<string>('DATABASE_USER'),
         password: config.get<string>('DATABASE_PASSWORD'),
         database: config.get<string>('DATABASE_NAME'),
-        entities: [UserOrmEntity, CommandLogOrmEntity, EventLogOrmEntity],
+        entities: [
+          UserOrmEntity,
+          OAuthClientOrmEntity,
+          OAuthAuthorizationCodeOrmEntity,
+          OAuthTokenOrmEntity,
+          CommandLogOrmEntity,
+          EventLogOrmEntity,
+        ],
         migrations: ['dist/database/migrations/*.js'],
         migrationsRun: true,
       }),
@@ -29,6 +42,9 @@ import { MessageBusModule } from './_shared/infrastructure/message-bus/bridge/me
     MessageBusModule.registerMiddlewares({}),
     AuthModule,
   ],
-  providers: [EventLogSubscriber],
+  providers: [
+    EventLogSubscriber,
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+  ],
 })
 export class AppModule {}
