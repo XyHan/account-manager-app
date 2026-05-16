@@ -93,6 +93,10 @@ export class AuthService {
   }
 
   logout(): void {
-    void this.router.navigateByUrl('/login');
+    this.authRepository.logout().pipe(
+      catchError(() => of(undefined)),
+    ).subscribe(() => {
+      void this.router.navigateByUrl('/login');
+    });
   }
 }

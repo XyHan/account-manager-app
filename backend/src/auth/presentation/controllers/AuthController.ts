@@ -154,6 +154,12 @@ export class AuthController {
     throw new BadRequestException('Unsupported grant_type');
   }
 
+  private clearTokenCookies(res: Response): void {
+    const secure = process.env.NODE_ENV === 'production';
+    res.cookie('X-Access-Token', '', { httpOnly: true, secure, sameSite: 'strict', maxAge: 0, path: '/' });
+    res.cookie('X-Refresh-Token', '', { httpOnly: true, secure, sameSite: 'strict', maxAge: 0, path: '/auth/token' });
+  }
+
   private setTokenCookies(res: Response, accessToken: string, refreshToken: string, secure: boolean): void {
     res.cookie('X-Access-Token', accessToken, {
       httpOnly: true,
@@ -169,6 +175,20 @@ export class AuthController {
       maxAge: REFRESH_TOKEN_MAX_AGE,
       path: '/auth/token',
     });
+  }
+
+  @Post('logout')
+  @UseGuards(OAuthGuard, ScopesGuard, RolesGuard)
+  @Scopes('app')
+  @Roles(RoleEnum.USER, RoleEnum.ADMIN)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(
+    @Req() req: AuthenticatedRequest,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    const cookies = (req as AuthenticatedRequest & { cookies: Record<string, string> }).cookies;
+    await this.oauthService.revokeToken(cookies['X-Access-Token']);
+    this.clearTokenCookies(res);
   }
 
   @Get('me')

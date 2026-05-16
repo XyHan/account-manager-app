@@ -219,6 +219,14 @@ export class OAuthService {
     };
   }
 
+  async revokeToken(accessToken: string): Promise<void> {
+    const token = await this.tokenRepo.findOne({ where: { accessToken } });
+    if (!token) throw new UnauthorizedException('Token not found');
+    if (!token.revoked) {
+      await this.tokenRepo.update(token.id, { revoked: true });
+    }
+  }
+
   async validateAccessToken(accessToken: string): Promise<TokenData | null> {
     const token = await this.tokenRepo.findOne({ where: { accessToken } });
     if (!token || token.revoked || token.accessTokenExpiresAt < new Date()) {

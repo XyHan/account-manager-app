@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { Subject, of, throwError } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
@@ -9,12 +9,14 @@ import { environment } from '../../../../environments/environment';
 
 const exchangeCodeSpy = vi.fn().mockReturnValue(of(undefined));
 const refreshTokenSpy = vi.fn().mockReturnValue(of(undefined));
+const logoutSpy = vi.fn().mockReturnValue(of(undefined));
 const meSpy = vi.fn().mockReturnValue(of({ userId: 'uid', role: 'USER', scope: 'app' }));
 
 const authRepositoryStub = {
   register: vi.fn(),
   exchangeCode: exchangeCodeSpy,
   refreshToken: refreshTokenSpy,
+  logout: logoutSpy,
   me: meSpy,
 };
 
@@ -25,11 +27,12 @@ describe('AuthService', () => {
   beforeEach(() => {
     exchangeCodeSpy.mockReset().mockReturnValue(of(undefined));
     refreshTokenSpy.mockReset().mockReturnValue(of(undefined));
+    logoutSpy.mockReset().mockReturnValue(of(undefined));
     meSpy.mockReset().mockReturnValue(of({ userId: 'uid', role: 'USER', scope: 'app' }));
 
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: 'login', component: class {} as never }]),
         { provide: AUTH_REPOSITORY, useValue: authRepositoryStub },
       ],
     });
@@ -95,6 +98,30 @@ describe('AuthService', () => {
 
       subject.next();
       subject.complete();
+    });
+  });
+
+  describe('logout', () => {
+    it('delegates to authRepository.logout', () => {
+      service.logout();
+      expect(logoutSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('navigates to /login after successful logout', async () => {
+      const router = TestBed.inject(Router) as Router;
+      const navigateSpy = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+      service.logout();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      expect(navigateSpy).toHaveBeenCalledWith('/login');
+    });
+
+    it('navigates to /login even when logout API fails', async () => {
+      logoutSpy.mockReturnValue(throwError(() => new Error('Network error')));
+      const router = TestBed.inject(Router) as Router;
+      const navigateSpy = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+      service.logout();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      expect(navigateSpy).toHaveBeenCalledWith('/login');
     });
   });
 

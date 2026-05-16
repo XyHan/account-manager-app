@@ -7,6 +7,7 @@ export interface IAuthRepository {
   register(id: string, email: string, password: string): Observable<UserView>;
   exchangeCode(code: string, codeVerifier: string, clientId: string, redirectUri: string): Observable<void>;
   refreshToken(): Observable<void>;
+  logout(): Observable<void>;
   me(): Observable<MeView>;
 }
 
