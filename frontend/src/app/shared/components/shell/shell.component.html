@@ -29,6 +29,21 @@
         </a>
       }
     </mat-nav-list>
+
+    <div class="sidenav-footer">
+      <button
+        mat-list-item
+        class="logout-btn"
+        (click)="logout()"
+        [matTooltip]="collapsed() ? ('nav.logout' | translate) : ''"
+        matTooltipPosition="right"
+      >
+        <mat-icon matListItemIcon>logout</mat-icon>
+        @if (!collapsed()) {
+          <span matListItemTitle>{{ 'nav.logout' | translate }}</span>
+        }
+      </button>
+    </div>
   </mat-sidenav>
 
   <mat-sidenav-content class="shell-content">

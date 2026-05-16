@@ -10,6 +10,7 @@ import { UpperCasePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ThemeService } from '../../services/theme.service';
 import { LocaleService } from '../../services/locale.service';
+import { AuthService } from '../../../features/auth/services/auth.service';
 
 interface NavItem {
   icon: string;
@@ -40,6 +41,7 @@ interface NavItem {
 export class ShellComponent {
   protected readonly themeService = inject(ThemeService);
   protected readonly localeService = inject(LocaleService);
+  protected readonly authService = inject(AuthService);
   protected readonly collapsed = signal(false);
 
   protected readonly navItems: NavItem[] = [
@@ -52,5 +54,9 @@ export class ShellComponent {
 
   toggleSidebar(): void {
     this.collapsed.update((v) => !v);
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

@@ -16,7 +16,8 @@
     "accounts": "Comptes",
     "transactions": "Transactions",
     "categories": "Catégories",
-    "import": "Import"
+    "import": "Import",
+    "logout": "Déconnexion"
   },
   "theme": {
     "toDark": "Passer au thème sombre",

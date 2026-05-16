@@ -16,7 +16,8 @@
     "accounts": "Accounts",
     "transactions": "Transactions",
     "categories": "Categories",
-    "import": "Import"
+    "import": "Import",
+    "logout": "Sign out"
   },
   "theme": {
     "toDark": "Switch to dark theme",

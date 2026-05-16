@@ -222,6 +222,26 @@ describe('OAuthService', () => {
     });
   });
 
+  describe('revokeToken', () => {
+    it('throws when token not found', async () => {
+      tokenRepo.findOne.mockResolvedValue(null);
+      await expect(service.revokeToken('unknown')).rejects.toThrow(UnauthorizedException);
+    });
+
+    it('marks token as revoked when found and active', async () => {
+      tokenRepo.findOne.mockResolvedValue({ id: 'tok1', revoked: false });
+      tokenRepo.update.mockResolvedValue(undefined);
+      await service.revokeToken('valid-token');
+      expect(tokenRepo.update).toHaveBeenCalledWith('tok1', { revoked: true });
+    });
+
+    it('does not call update when token is already revoked', async () => {
+      tokenRepo.findOne.mockResolvedValue({ id: 'tok1', revoked: true });
+      await service.revokeToken('already-revoked-token');
+      expect(tokenRepo.update).not.toHaveBeenCalled();
+    });
+  });
+
   describe('validateAccessToken', () => {
     it('returns null when token not found', async () => {
       tokenRepo.findOne.mockResolvedValue(null);

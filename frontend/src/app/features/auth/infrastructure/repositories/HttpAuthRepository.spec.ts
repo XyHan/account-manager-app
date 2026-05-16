@@ -58,6 +58,15 @@ describe('HttpAuthRepository', () => {
     });
   });
 
+  describe('logout', () => {
+    it('POSTs to /auth/logout', () => {
+      repo.logout().subscribe();
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
+      expect(req.request.method).toBe('POST');
+      req.flush(null, { status: 204, statusText: 'No Content' });
+    });
+  });
+
   describe('me', () => {
     it('GETs /auth/me and returns the response', async () => {
       const payload = { userId: 'uid', role: 'USER', scope: 'app' };
