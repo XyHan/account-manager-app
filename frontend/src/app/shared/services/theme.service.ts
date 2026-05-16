@@ -11,21 +11,20 @@ export class ThemeService {
 
   toggle(): void {
     const next: Theme = this.current() === 'theme-dark' ? 'theme-light' : 'theme-dark';
-    this.apply(next);
+    this.current.set(next);
+    this.applyToDOM(next);
   }
 
   private load(): Theme {
     const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
     const theme = stored ?? DEFAULT;
-    this.apply(theme);
+    this.applyToDOM(theme);
     return theme;
   }
 
-  private apply(theme: Theme): void {
-    const body = document.body;
-    body.classList.remove('theme-dark', 'theme-light');
-    body.classList.add(theme);
+  private applyToDOM(theme: Theme): void {
+    document.body.classList.remove('theme-dark', 'theme-light');
+    document.body.classList.add(theme);
     localStorage.setItem(STORAGE_KEY, theme);
-    this.current.set(theme);
   }
 }
