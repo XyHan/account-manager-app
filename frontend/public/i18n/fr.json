@@ -65,6 +65,30 @@
       "OTHER": "Autre"
     }
   },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bienvenue",
+    "quickAccess": "Accès rapide",
+    "cards": {
+      "comingSoon": "Bientôt",
+      "bankAccounts": {
+        "title": "Comptes bancaires",
+        "description": "Gérez vos comptes bancaires"
+      },
+      "transactions": {
+        "title": "Transactions",
+        "description": "Suivez vos dépenses et revenus"
+      },
+      "categories": {
+        "title": "Catégories",
+        "description": "Organisez vos transactions"
+      },
+      "profile": {
+        "title": "Profil",
+        "description": "Gérez vos paramètres"
+      }
+    }
+  },
   "auth": {
     "register": {
       "title": "Créer un compte",
