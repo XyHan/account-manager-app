@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor, errorInterceptor])),
     { provide: AUTH_REPOSITORY, useClass: HttpAuthRepository },
-    ...provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
     provideTranslateService({ lang: 'fr' }),
+    ...provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
   ],
 };
