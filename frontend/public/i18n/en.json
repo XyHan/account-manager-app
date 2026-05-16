@@ -65,6 +65,30 @@
       "OTHER": "Other"
     }
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome",
+    "quickAccess": "Quick access",
+    "cards": {
+      "comingSoon": "Soon",
+      "bankAccounts": {
+        "title": "Bank accounts",
+        "description": "Manage your bank accounts"
+      },
+      "transactions": {
+        "title": "Transactions",
+        "description": "Track your expenses and income"
+      },
+      "categories": {
+        "title": "Categories",
+        "description": "Organize your transactions"
+      },
+      "profile": {
+        "title": "Profile",
+        "description": "Manage your settings"
+      }
+    }
+  },
   "auth": {
     "register": {
       "title": "Create an account",

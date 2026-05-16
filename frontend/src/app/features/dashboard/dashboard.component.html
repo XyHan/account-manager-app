@@ -1,0 +1,58 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ 'dashboard.title' | translate }}</h1>
+    @if (user()) {
+      <p class="page-subtitle">{{ 'dashboard.welcome' | translate }}&nbsp;👋</p>
+    }
+  </div>
+</div>
+
+<section class="quick-access">
+  <h2 class="section-title">{{ 'dashboard.quickAccess' | translate }}</h2>
+
+  <div class="cards-grid">
+    <mat-card class="action-card" routerLink="/bank-accounts">
+      <mat-card-content>
+        <mat-icon class="card-icon">account_balance</mat-icon>
+        <div class="card-body">
+          <h3>{{ 'dashboard.cards.bankAccounts.title' | translate }}</h3>
+          <p>{{ 'dashboard.cards.bankAccounts.description' | translate }}</p>
+        </div>
+        <mat-icon class="card-chevron">chevron_right</mat-icon>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="action-card action-card--disabled">
+      <mat-card-content>
+        <mat-icon class="card-icon">receipt_long</mat-icon>
+        <div class="card-body">
+          <h3>{{ 'dashboard.cards.transactions.title' | translate }}</h3>
+          <p>{{ 'dashboard.cards.transactions.description' | translate }}</p>
+        </div>
+        <span class="coming-soon">{{ 'dashboard.cards.comingSoon' | translate }}</span>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="action-card action-card--disabled">
+      <mat-card-content>
+        <mat-icon class="card-icon">label</mat-icon>
+        <div class="card-body">
+          <h3>{{ 'dashboard.cards.categories.title' | translate }}</h3>
+          <p>{{ 'dashboard.cards.categories.description' | translate }}</p>
+        </div>
+        <span class="coming-soon">{{ 'dashboard.cards.comingSoon' | translate }}</span>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="action-card" routerLink="/profile/change-password">
+      <mat-card-content>
+        <mat-icon class="card-icon">manage_accounts</mat-icon>
+        <div class="card-body">
+          <h3>{{ 'dashboard.cards.profile.title' | translate }}</h3>
+          <p>{{ 'dashboard.cards.profile.description' | translate }}</p>
+        </div>
+        <mat-icon class="card-chevron">chevron_right</mat-icon>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>
