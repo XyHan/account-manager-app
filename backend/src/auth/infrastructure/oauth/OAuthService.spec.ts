@@ -156,6 +156,72 @@ describe('OAuthService', () => {
     });
   });
 
+  describe('refreshAccessToken', () => {
+    const validToken = {
+      id: 'tok1',
+      refreshToken: 'rt-valid',
+      accessToken: 'at-old',
+      revoked: false,
+      refreshTokenExpiresAt: new Date(Date.now() + 60_000),
+      scope: 'app',
+      userId: 'uid',
+      clientId: 'app',
+      userRole: RoleEnum.USER,
+    };
+
+    it('throws when refresh token not found', async () => {
+      tokenRepo.findOne.mockResolvedValue(null);
+      await expect(service.refreshAccessToken('unknown', '127.0.0.1')).rejects.toThrow(UnauthorizedException);
+    });
+
+    it('throws and revokes all user sessions when token is already revoked (theft detection)', async () => {
+      tokenRepo.findOne.mockResolvedValue({ ...validToken, revoked: true });
+      tokenRepo.update.mockResolvedValue(undefined);
+
+      await expect(service.refreshAccessToken('rt-valid', '127.0.0.1')).rejects.toThrow(UnauthorizedException);
+      expect(tokenRepo.update).toHaveBeenCalledWith(
+        { userId: 'uid', revoked: false },
+        { revoked: true },
+      );
+    });
+
+    it('throws when refresh token is expired', async () => {
+      tokenRepo.findOne.mockResolvedValue({
+        ...validToken,
+        refreshTokenExpiresAt: new Date(Date.now() - 1000),
+      });
+      await expect(service.refreshAccessToken('rt-valid', '127.0.0.1')).rejects.toThrow(UnauthorizedException);
+    });
+
+    it('revokes old token and issues new tokens on success', async () => {
+      tokenRepo.findOne.mockResolvedValue(validToken);
+      tokenRepo.update.mockResolvedValue(undefined);
+      userRepo.findOne.mockResolvedValue({ id: 'uid', role: RoleEnum.USER });
+      tokenRepo.save.mockImplementation((t) => Promise.resolve(t));
+      eventBus.execute.mockReturnValue(of(undefined));
+
+      const result = await service.refreshAccessToken('rt-valid', '127.0.0.1');
+
+      expect(tokenRepo.update).toHaveBeenCalledWith('tok1', { revoked: true });
+      expect(result.accessToken).toBeTruthy();
+      expect(result.refreshToken).toBeTruthy();
+      expect(result.refreshToken).not.toBe('rt-valid');
+      expect(result.scope).toBe('app');
+    });
+
+    it('dispatches UserLoggedIn event on success', async () => {
+      tokenRepo.findOne.mockResolvedValue(validToken);
+      tokenRepo.update.mockResolvedValue(undefined);
+      userRepo.findOne.mockResolvedValue({ id: 'uid', role: RoleEnum.USER });
+      tokenRepo.save.mockImplementation((t) => Promise.resolve(t));
+      eventBus.execute.mockReturnValue(of(undefined));
+
+      await service.refreshAccessToken('rt-valid', '127.0.0.1');
+
+      expect(eventBus.execute).toHaveBeenCalledWith(expect.objectContaining({ userId: 'uid' }));
+    });
+  });
+
   describe('validateAccessToken', () => {
     it('returns null when token not found', async () => {
       tokenRepo.findOne.mockResolvedValue(null);

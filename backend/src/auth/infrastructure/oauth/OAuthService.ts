@@ -161,6 +161,64 @@ export class OAuthService {
     };
   }
 
+  async refreshAccessToken(refreshToken: string, ip: string): Promise<TokenResult> {
+    const token = await this.tokenRepo.findOne({ where: { refreshToken } });
+
+    if (!token) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    if (token.revoked) {
+      // Refresh token reuse detected — revoke all active tokens for this user (theft containment)
+      await this.tokenRepo.update({ userId: token.userId, revoked: false }, { revoked: true });
+      throw new UnauthorizedException('Refresh token reuse detected — all sessions have been revoked');
+    }
+
+    if (!token.refreshTokenExpiresAt || token.refreshTokenExpiresAt < new Date()) {
+      throw new UnauthorizedException('Refresh token expired');
+    }
+
+    // Revoke old token before issuing new ones (rotation)
+    await this.tokenRepo.update(token.id, { revoked: true });
+
+    const user = await this.userRepo.findOne({ where: { id: token.userId } });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const newAccessToken = randomBytes(32).toString('hex');
+    const newRefreshToken = randomBytes(32).toString('hex');
+    const now = Date.now();
+    const accessTokenExpiresAt = new Date(now + OAuthService.ACCESS_TOKEN_TTL_MS);
+    const refreshTokenExpiresAt = new Date(now + OAuthService.REFRESH_TOKEN_TTL_MS);
+
+    await this.tokenRepo.save(
+      this.tokenRepo.create({
+        accessToken: newAccessToken,
+        accessTokenExpiresAt,
+        refreshToken: newRefreshToken,
+        refreshTokenExpiresAt,
+        scope: token.scope,
+        userId: token.userId,
+        userRole: token.userRole,
+        clientId: token.clientId,
+        revoked: false,
+      }),
+    );
+
+    const event = new UserLoggedIn(token.userId, ip);
+    await lastValueFrom(this.eventBus.execute(event));
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      accessTokenExpiresAt,
+      refreshTokenExpiresAt,
+      scope: token.scope,
+      userId: token.userId,
+    };
+  }
+
   async validateAccessToken(accessToken: string): Promise<TokenData | null> {
     const token = await this.tokenRepo.findOne({ where: { accessToken } });
     if (!token || token.revoked || token.accessTokenExpiresAt < new Date()) {
