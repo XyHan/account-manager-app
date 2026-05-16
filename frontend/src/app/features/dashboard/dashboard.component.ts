@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.authService.me().subscribe({
       next: (me) => this.user.set(me),
+      error: () => { /* handled by error interceptor */ },
     });
   }
 }
