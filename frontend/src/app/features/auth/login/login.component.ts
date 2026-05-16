@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../services/auth.service';
 
@@ -9,7 +8,7 @@ import { AuthService } from '../services/auth.service';
   selector: 'app-login',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [RouterLink, MatButtonModule, MatProgressSpinnerModule],
   template: `
     <div class="login-container">
       <div class="login-card">
@@ -29,7 +28,6 @@ import { AuthService } from '../services/auth.service';
           @if (loading()) {
             <mat-spinner diameter="20" />
           } @else {
-            <mat-icon>login</mat-icon>
             Se connecter
           }
         </button>
@@ -63,7 +61,7 @@ import { AuthService } from '../services/auth.service';
     .logo-icon { font-size: 3rem; height: 3rem; width: 3rem; color: var(--color-primary, #6c63ff); }
     h1 { margin: 0; font-size: 1.5rem; font-weight: 600; color: var(--color-text, #e2e8f0); }
     .subtitle { margin: 0; color: var(--color-text-muted, #94a3b8); font-size: .875rem; }
-    button[mat-flat-button] { width: 100%; display: flex; gap: .5rem; align-items: center; justify-content: center; }
+    button[mat-flat-button] { width: 100%; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 600; }
     .register-link { font-size: .875rem; color: var(--color-text-muted, #94a3b8); text-align: center; }
     .register-link a { color: var(--color-primary, #6c63ff); text-decoration: none; }
     .error { color: var(--color-expense, #f87171); font-size: .875rem; text-align: center; }
