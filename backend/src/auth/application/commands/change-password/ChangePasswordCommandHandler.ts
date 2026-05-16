@@ -4,9 +4,10 @@ import type { CommandHandlerInterface } from '../../../../_shared/infrastructure
 import { EventBus } from '../../../../_shared/infrastructure/message-bus/bridge/bus/event.bus';
 import type { IUserRepository } from '../../../domain/repositories/IUserRepository';
 import { USER_REPOSITORY } from '../../../domain/repositories/IUserRepository';
+import type { ITokenRevoker } from '../../../domain/repositories/ITokenRevoker';
+import { TOKEN_REVOKER } from '../../../domain/repositories/ITokenRevoker';
 import { UserId } from '../../../domain/value-objects/UserId';
 import { HashedPassword } from '../../../domain/value-objects/HashedPassword';
-import { OAuthService } from '../../../infrastructure/oauth/OAuthService';
 import type { ChangePasswordCommand } from './ChangePasswordCommand';
 
 @Injectable()
@@ -14,7 +15,8 @@ export class ChangePasswordCommandHandler implements CommandHandlerInterface {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
-    private readonly oauthService: OAuthService,
+    @Inject(TOKEN_REVOKER)
+    private readonly tokenRevoker: ITokenRevoker,
     private readonly eventBus: EventBus,
   ) {}
 
@@ -29,7 +31,7 @@ export class ChangePasswordCommandHandler implements CommandHandlerInterface {
     user.changePassword(newHash);
 
     await this.userRepository.save(user);
-    await this.oauthService.revokeAllUserTokens(command.userId);
+    await this.tokenRevoker.revokeAllUserTokens(command.userId);
 
     for (const event of user.pullDomainEvents()) {
       await lastValueFrom(this.eventBus.execute(event));

@@ -18,6 +18,7 @@ import { FindUserByEmailQueryHandler } from './application/queries/find-user-by-
 import { AuthController } from './presentation/controllers/AuthController';
 import { USER_REPOSITORY } from './domain/repositories/IUserRepository';
 import { USER_FINDER } from './domain/finders/IUserFinder';
+import { TOKEN_REVOKER } from './domain/repositories/ITokenRevoker';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { USER_FINDER } from './domain/finders/IUserFinder';
     OAuthService,
     { provide: USER_REPOSITORY, useClass: UserRepository },
     { provide: USER_FINDER, useClass: UserFinder },
+    { provide: TOKEN_REVOKER, useClass: OAuthService },
   ],
   exports: [OAuthService],
 })

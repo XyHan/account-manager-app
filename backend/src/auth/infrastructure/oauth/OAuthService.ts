@@ -11,6 +11,7 @@ import { HashedPassword } from '../../domain/value-objects/HashedPassword';
 import { UserLoggedIn } from '../../domain/events/UserLoggedIn';
 import { EventBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/event.bus';
 import type { RoleEnum } from '../../domain/value-objects/Role';
+import type { ITokenRevoker } from '../../domain/repositories/ITokenRevoker';
 
 export interface ClientData {
   clientId: string;
@@ -35,7 +36,7 @@ export interface TokenResult {
 }
 
 @Injectable()
-export class OAuthService {
+export class OAuthService implements ITokenRevoker {
   private static readonly ACCESS_TOKEN_TTL_MS = 15 * 60 * 1000;
   private static readonly REFRESH_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
   private static readonly AUTH_CODE_TTL_MS = 5 * 60 * 1000;

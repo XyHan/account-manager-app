@@ -8,7 +8,7 @@ import { Email } from '../../../domain/value-objects/Email';
 import { HashedPassword } from '../../../domain/value-objects/HashedPassword';
 import { Role } from '../../../domain/value-objects/Role';
 import type { IUserRepository } from '../../../domain/repositories/IUserRepository';
-import type { OAuthService } from '../../../infrastructure/oauth/OAuthService';
+import type { ITokenRevoker } from '../../../domain/repositories/ITokenRevoker';
 import type { EventBus } from '../../../../_shared/infrastructure/message-bus/bridge/bus/event.bus';
 
 const TEST_USER_ID = '550e8400-e29b-41d4-a716-446655440000';
@@ -29,17 +29,17 @@ async function buildUser(password = CURRENT_PASSWORD): Promise<User> {
 describe('ChangePasswordCommandHandler', () => {
   let handler: ChangePasswordCommandHandler;
   let userRepository: jest.Mocked<IUserRepository>;
-  let oauthService: jest.Mocked<Pick<OAuthService, 'revokeAllUserTokens'>>;
+  let tokenRevoker: jest.Mocked<ITokenRevoker>;
   let eventBus: { execute: jest.Mock };
 
   beforeEach(() => {
     userRepository = { save: jest.fn(), findById: jest.fn() };
-    oauthService = { revokeAllUserTokens: jest.fn().mockResolvedValue(undefined) };
+    tokenRevoker = { revokeAllUserTokens: jest.fn().mockResolvedValue(undefined) };
     eventBus = { execute: jest.fn().mockReturnValue(of(undefined)) };
 
     handler = new ChangePasswordCommandHandler(
       userRepository,
-      oauthService as unknown as OAuthService,
+      tokenRevoker,
       eventBus as unknown as EventBus,
     );
   });
@@ -79,7 +79,7 @@ describe('ChangePasswordCommandHandler', () => {
 
     await handler.handle(new ChangePasswordCommand(TEST_USER_ID, CURRENT_PASSWORD, NEW_PASSWORD));
 
-    expect(oauthService.revokeAllUserTokens).toHaveBeenCalledWith(TEST_USER_ID);
+    expect(tokenRevoker.revokeAllUserTokens).toHaveBeenCalledWith(TEST_USER_ID);
   });
 
   it('dispatches PasswordChanged event', async () => {
@@ -102,7 +102,7 @@ describe('ChangePasswordCommandHandler', () => {
     ).rejects.toThrow(UnauthorizedException);
 
     expect(userRepository.save).not.toHaveBeenCalled();
-    expect(oauthService.revokeAllUserTokens).not.toHaveBeenCalled();
+    expect(tokenRevoker.revokeAllUserTokens).not.toHaveBeenCalled();
     expect(eventBus.execute).not.toHaveBeenCalled();
   });
 });
