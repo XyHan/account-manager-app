@@ -6,6 +6,8 @@ import { firstValueFrom } from 'rxjs';
 import type { Observable } from 'rxjs';
 import type { UrlTree } from '@angular/router';
 import { authGuard } from './auth.guard';
+import { AUTH_REPOSITORY } from '../../features/auth/domain/repositories/IAuthRepository';
+import { HttpAuthRepository } from '../../features/auth/infrastructure/repositories/HttpAuthRepository';
 import { environment } from '../../../environments/environment';
 
 describe('authGuard', () => {
@@ -17,6 +19,7 @@ describe('authGuard', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        { provide: AUTH_REPOSITORY, useClass: HttpAuthRepository },
         provideRouter([
           { path: 'dashboard', component: class {} as never, canActivate: [authGuard] },
           { path: 'login', component: class {} as never },
