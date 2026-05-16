@@ -16,6 +16,9 @@ import { RegisterUserCommandHandler } from './application/commands/register-user
 import { ChangePasswordCommandHandler } from './application/commands/change-password/ChangePasswordCommandHandler';
 import { FindUserByEmailQueryHandler } from './application/queries/find-user-by-email/FindUserByEmailQueryHandler';
 import { AuthController } from './presentation/controllers/AuthController';
+import { OAuthGuard } from './presentation/guards/OAuthGuard';
+import { ScopesGuard } from './presentation/guards/ScopesGuard';
+import { RolesGuard } from './presentation/guards/RolesGuard';
 import { USER_REPOSITORY } from './domain/repositories/IUserRepository';
 import { USER_FINDER } from './domain/finders/IUserFinder';
 import { TOKEN_REVOKER } from './domain/repositories/ITokenRevoker';
@@ -40,10 +43,13 @@ import { TOKEN_REVOKER } from './domain/repositories/ITokenRevoker';
     ChangePasswordCommandHandler,
     FindUserByEmailQueryHandler,
     OAuthService,
+    OAuthGuard,
+    ScopesGuard,
+    RolesGuard,
     { provide: USER_REPOSITORY, useClass: UserRepository },
     { provide: USER_FINDER, useClass: UserFinder },
     { provide: TOKEN_REVOKER, useClass: OAuthService },
   ],
-  exports: [OAuthService],
+  exports: [OAuthService, OAuthGuard, ScopesGuard, RolesGuard],
 })
 export class AuthModule {}

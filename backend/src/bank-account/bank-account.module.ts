@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageBusModule } from '../_shared/infrastructure/message-bus/bridge/message-bus.module';
+import { AuthModule } from '../auth/auth.module';
 import { CommandLogMiddleware } from '../_shared/infrastructure/cqrs/middleware/CommandLogMiddleware';
 import { EventLogMiddleware } from '../_shared/infrastructure/cqrs/middleware/EventLogMiddleware';
 import { CommandLogOrmEntity } from '../_shared/infrastructure/cqrs/orm-entities/CommandLog.orm-entity';
@@ -13,6 +14,7 @@ import { BANK_ACCOUNT_REPOSITORY } from './domain/repositories/IBankAccountRepos
 
 @Module({
   imports: [
+    AuthModule,
     MessageBusModule.registerMiddlewares({
       commandBus: [CommandLogMiddleware],
       eventBus: [EventLogMiddleware],
