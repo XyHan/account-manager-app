@@ -1,5 +1,3 @@
-import type { BankAccountOrmEntity } from '../../infrastructure/persistence/orm-entities/BankAccountOrmEntity';
-
 export class BankAccountView {
   private constructor(
     public readonly id: string,
@@ -8,10 +6,6 @@ export class BankAccountView {
     public readonly type: string,
     public readonly balance: number,
   ) {}
-
-  static fromOrmEntity(entity: BankAccountOrmEntity): BankAccountView {
-    return new BankAccountView(entity.id, entity.name, entity.bank, entity.type, Number(entity.balance));
-  }
 
   static create(id: string, name: string, bank: string, type: string, balance: number): BankAccountView {
     return new BankAccountView(id, name, bank, type, balance);
