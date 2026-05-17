@@ -9,7 +9,9 @@
     "back": "Retour",
     "search": "Rechercher",
     "noData": "Aucune donnée",
-    "error": "Une erreur est survenue. Veuillez réessayer."
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "loadError": "Impossible de charger les données. Veuillez réessayer.",
+    "retry": "Réessayer"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -45,7 +47,8 @@
       "title": "Mes comptes bancaires",
       "addButton": "Ajouter un compte",
       "empty": "Vous n'avez pas encore de compte bancaire.",
-      "createSuccess": "Compte bancaire créé avec succès."
+      "createSuccess": "Compte bancaire créé avec succès.",
+      "consolidatedBalance": "Solde total consolidé"
     },
     "form": {
       "title": "Ajouter un compte bancaire",

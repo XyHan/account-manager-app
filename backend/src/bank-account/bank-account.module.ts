@@ -8,9 +8,13 @@ import { CommandLogOrmEntity } from '../_shared/infrastructure/cqrs/orm-entities
 import { EventLogOrmEntity } from '../_shared/infrastructure/cqrs/orm-entities/EventLog.orm-entity';
 import { BankAccountOrmEntity } from './infrastructure/persistence/orm-entities/BankAccountOrmEntity';
 import { BankAccountRepository } from './infrastructure/persistence/repositories/BankAccountRepository';
+import { BankAccountFinder } from './infrastructure/persistence/finders/BankAccountFinder';
 import { CreateBankAccountCommandHandler } from './application/commands/create-bank-account/CreateBankAccountCommandHandler';
+import { ListBankAccountsQueryHandler } from './application/queries/list-bank-accounts/ListBankAccountsQueryHandler';
+import { GetConsolidatedBalanceQueryHandler } from './application/queries/get-consolidated-balance/GetConsolidatedBalanceQueryHandler';
 import { BankAccountController } from './presentation/controllers/BankAccountController';
 import { BANK_ACCOUNT_REPOSITORY } from './domain/repositories/IBankAccountRepository';
+import { BANK_ACCOUNT_FINDER } from './domain/finders/IBankAccountFinder';
 
 @Module({
   imports: [
@@ -25,7 +29,10 @@ import { BANK_ACCOUNT_REPOSITORY } from './domain/repositories/IBankAccountRepos
   controllers: [BankAccountController],
   providers: [
     CreateBankAccountCommandHandler,
+    ListBankAccountsQueryHandler,
+    GetConsolidatedBalanceQueryHandler,
     { provide: BANK_ACCOUNT_REPOSITORY, useClass: BankAccountRepository },
+    { provide: BANK_ACCOUNT_FINDER, useClass: BankAccountFinder },
   ],
 })
 export class BankAccountModule {}

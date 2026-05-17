@@ -9,7 +9,9 @@
     "back": "Back",
     "search": "Search",
     "noData": "No data",
-    "error": "An error occurred. Please try again."
+    "error": "An error occurred. Please try again.",
+    "loadError": "Failed to load data. Please try again.",
+    "retry": "Retry"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -45,7 +47,8 @@
       "title": "My bank accounts",
       "addButton": "Add an account",
       "empty": "You don't have any bank account yet.",
-      "createSuccess": "Bank account created successfully."
+      "createSuccess": "Bank account created successfully.",
+      "consolidatedBalance": "Total consolidated balance"
     },
     "form": {
       "title": "Add a bank account",

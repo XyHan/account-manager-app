@@ -6,7 +6,26 @@
   </button>
 </div>
 
-@if (accounts().length === 0) {
+@if (!loading() && !error()) {
+  <div class="consolidated-balance-banner">
+    <span class="consolidated-label">{{ 'bankAccounts.list.consolidatedBalance' | translate }}</span>
+    <span class="consolidated-amount">{{ consolidatedBalance() | number:'1.2-2' }} €</span>
+  </div>
+}
+
+@if (loading()) {
+  <div class="loading-state">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (error()) {
+  <div class="error-state">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ 'common.loadError' | translate }}</p>
+    <button mat-stroked-button (click)="reload()">
+      {{ 'common.retry' | translate }}
+    </button>
+  </div>
+} @else if (accounts().length === 0) {
   <div class="empty-state">
     <mat-icon class="empty-icon">account_balance</mat-icon>
     <p>{{ 'bankAccounts.list.empty' | translate }}</p>

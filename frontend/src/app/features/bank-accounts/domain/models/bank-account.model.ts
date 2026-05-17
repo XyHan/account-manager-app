@@ -6,6 +6,12 @@ export interface BankAccountModel {
   bank: string;
   type: AccountType;
   balance: number;
+  createdAt: string;
+}
+
+export interface BankAccountListResponse {
+  accounts: BankAccountModel[];
+  consolidatedBalance: number;
 }
 
 export interface CreateBankAccountPayload {
