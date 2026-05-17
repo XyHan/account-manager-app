@@ -10,8 +10,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { catchError, EMPTY } from 'rxjs';
-import { BANK_ACCOUNT_REPOSITORY } from '../domain/repositories/IBankAccountRepository';
-import { HttpBankAccountRepository } from '../infrastructure/repositories/HttpBankAccountRepository';
 import { BankAccountService } from '../services/bank-account.service';
 import type { BankAccountModel } from '../domain/models/bank-account.model';
 import { BankAccountFormComponent, type BankAccountFormDialogData } from '../bank-account-form/bank-account-form.component';
@@ -30,9 +28,6 @@ import { BankAccountFormComponent, type BankAccountFormDialogData } from '../ban
     MatChipsModule,
     MatProgressSpinnerModule,
     TranslatePipe,
-  ],
-  providers: [
-    { provide: BANK_ACCOUNT_REPOSITORY, useClass: HttpBankAccountRepository },
   ],
   templateUrl: './bank-account-list.component.html',
   styleUrl: './bank-account-list.component.scss',

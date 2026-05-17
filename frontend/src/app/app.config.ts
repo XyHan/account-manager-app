@@ -8,6 +8,8 @@ import { credentialsInterceptor } from './core/interceptors/credentials.intercep
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { AUTH_REPOSITORY } from './features/auth/domain/repositories/IAuthRepository';
 import { HttpAuthRepository } from './features/auth/infrastructure/repositories/HttpAuthRepository';
+import { BANK_ACCOUNT_REPOSITORY } from './features/bank-accounts/domain/repositories/IBankAccountRepository';
+import { HttpBankAccountRepository } from './features/bank-accounts/infrastructure/repositories/HttpBankAccountRepository';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -17,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor, errorInterceptor])),
     { provide: AUTH_REPOSITORY, useClass: HttpAuthRepository },
+    { provide: BANK_ACCOUNT_REPOSITORY, useClass: HttpBankAccountRepository },
     provideTranslateService({ lang: 'fr' }),
     ...provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
   ],
