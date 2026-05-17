@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import type { IBankAccountRepository } from '../../domain/repositories/IBankAccountRepository';
-import type { BankAccountListResponse, BankAccountModel, CreateBankAccountPayload } from '../../domain/models/bank-account.model';
+import type { BankAccountListResponse, BankAccountModel, CreateBankAccountPayload, UpdateBankAccountPayload } from '../../domain/models/bank-account.model';
 import { environment } from '../../../../../environments/environment';
 
 @Injectable()
@@ -15,5 +15,9 @@ export class HttpBankAccountRepository implements IBankAccountRepository {
 
   create(payload: CreateBankAccountPayload): Observable<BankAccountModel> {
     return this.http.post<BankAccountModel>(`${environment.apiUrl}/bank-accounts`, payload);
+  }
+
+  update(id: string, payload: UpdateBankAccountPayload): Observable<BankAccountModel> {
+    return this.http.patch<BankAccountModel>(`${environment.apiUrl}/bank-accounts/${id}`, payload);
   }
 }

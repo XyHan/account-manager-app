@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of, throwError, firstValueFrom } from 'rxjs';
 import { BankAccountService } from './bank-account.service';
 import { BANK_ACCOUNT_REPOSITORY } from '../domain/repositories/IBankAccountRepository';
-import type { BankAccountListResponse, BankAccountModel } from '../domain/models/bank-account.model';
+import type { BankAccountListResponse, BankAccountModel, UpdateBankAccountPayload } from '../domain/models/bank-account.model';
 
 const mockAccount: BankAccountModel = {
   id: 'abc-123',
@@ -20,8 +20,9 @@ const mockListResponse: BankAccountListResponse = {
 
 const findAllSpy = vi.fn().mockReturnValue(of(mockListResponse));
 const createSpy = vi.fn().mockReturnValue(of(mockAccount));
+const updateSpy = vi.fn().mockReturnValue(of(mockAccount));
 
-const repositoryStub = { findAll: findAllSpy, create: createSpy };
+const repositoryStub = { findAll: findAllSpy, create: createSpy, update: updateSpy };
 
 describe('BankAccountService', () => {
   let service: BankAccountService;
@@ -29,6 +30,7 @@ describe('BankAccountService', () => {
   beforeEach(() => {
     findAllSpy.mockReset().mockReturnValue(of(mockListResponse));
     createSpy.mockReset().mockReturnValue(of(mockAccount));
+    updateSpy.mockReset().mockReturnValue(of(mockAccount));
 
     TestBed.configureTestingModule({
       providers: [
@@ -66,6 +68,20 @@ describe('BankAccountService', () => {
     it('propagates repository errors', async () => {
       createSpy.mockReturnValue(throwError(() => new Error('Network error')));
       await expect(firstValueFrom(service.create({ name: 'x', bank: 'y', type: 'OTHER' }))).rejects.toThrow('Network error');
+    });
+  });
+
+  describe('update', () => {
+    it('delegates to repository with the correct id and payload and returns the updated account', async () => {
+      const payload: UpdateBankAccountPayload = { name: 'Nouveau nom', type: 'SAVINGS' };
+      const result = await firstValueFrom(service.update('abc-123', payload));
+      expect(updateSpy).toHaveBeenCalledWith('abc-123', payload);
+      expect(result).toEqual(mockAccount);
+    });
+
+    it('propagates repository errors', async () => {
+      updateSpy.mockReturnValue(throwError(() => new Error('Network error')));
+      await expect(firstValueFrom(service.update('abc-123', { name: 'x' }))).rejects.toThrow('Network error');
     });
   });
 });

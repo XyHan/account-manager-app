@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ 'bankAccounts.form.title' | translate }}</h2>
+<h2 mat-dialog-title>{{ (isEditMode ? 'bankAccounts.form.editTitle' : 'bankAccounts.form.title') | translate }}</h2>
 
 <mat-dialog-content>
   @if (apiError()) {

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BANK_ACCOUNT_REPOSITORY } from '../domain/repositories/IBankAccountRepository';
-import type { BankAccountListResponse, BankAccountModel, CreateBankAccountPayload } from '../domain/models/bank-account.model';
+import type { BankAccountListResponse, BankAccountModel, CreateBankAccountPayload, UpdateBankAccountPayload } from '../domain/models/bank-account.model';
 
 @Injectable({ providedIn: 'root' })
 export class BankAccountService {
@@ -13,5 +13,9 @@ export class BankAccountService {
 
   create(payload: CreateBankAccountPayload): Observable<BankAccountModel> {
     return this.repository.create(payload);
+  }
+
+  update(id: string, payload: UpdateBankAccountPayload): Observable<BankAccountModel> {
+    return this.repository.update(id, payload);
   }
 }

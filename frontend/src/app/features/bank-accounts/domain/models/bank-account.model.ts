@@ -19,3 +19,9 @@ export interface CreateBankAccountPayload {
   bank: string;
   type: AccountType;
 }
+
+export interface UpdateBankAccountPayload {
+  name?: string;
+  bank?: string;
+  type?: AccountType;
+}
