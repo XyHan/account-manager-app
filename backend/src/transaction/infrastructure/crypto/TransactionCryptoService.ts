@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import type { ITransactionCryptoService } from '../../domain/services/ITransactionCryptoService';
 
 @Injectable()
-export class TransactionCryptoService {
+export class TransactionCryptoService implements ITransactionCryptoService {
   private readonly key: Buffer;
 
   constructor(private readonly config: ConfigService) {
@@ -31,6 +32,7 @@ export class TransactionCryptoService {
     const tag = data.subarray(data.length - 16);
     const encrypted = data.subarray(0, data.length - 16);
     const decipher = createDecipheriv('aes-256-gcm', this.key, iv);
+    decipher.setAuthTagLength(16);
     decipher.setAuthTag(tag);
     return decipher.update(encrypted) + decipher.final('utf8');
   }
