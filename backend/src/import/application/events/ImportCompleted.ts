@@ -3,7 +3,7 @@ import { EventIdentifier } from '../../../_shared/infrastructure/message-bus/ide
 import { Name } from '../../../_shared/infrastructure/message-bus/value-object/name.value-object';
 import { Version } from '../../../_shared/infrastructure/message-bus/value-object/version.value-object';
 import type { EventInterface } from '../../../_shared/infrastructure/message-bus/event/event.interface';
-import { OnImportCompleted } from '../../application/event-handlers/OnImportCompleted';
+import { OnImportCompleted } from '../event-handlers/OnImportCompleted';
 
 @EventHandler(OnImportCompleted)
 export class ImportCompleted implements EventInterface {

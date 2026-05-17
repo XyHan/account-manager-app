@@ -7,7 +7,7 @@ import type { IBankAccountRepository } from '../../../bank-account/domain/reposi
 import { BANK_ACCOUNT_REPOSITORY } from '../../../bank-account/domain/repositories/IBankAccountRepository';
 import { BankAccountId } from '../../../bank-account/domain/value-objects/BankAccountId';
 import { Balance } from '../../../bank-account/domain/value-objects/Balance';
-import type { ImportCompleted } from '../../domain/events/ImportCompleted';
+import type { ImportCompleted } from '../events/ImportCompleted';
 
 @Injectable()
 export class OnImportCompleted implements EventHandlerInterface {

@@ -12,7 +12,7 @@ import type { ITransactionRepository } from '../../../../transaction/domain/repo
 import type { IImportLogRepository } from '../../../domain/repositories/IImportLogRepository';
 import type { ICsvParserService } from '../../../domain/services/ICsvParserService';
 import type { EventBus } from '../../../../_shared/infrastructure/message-bus/bridge/bus/event.bus';
-import type { TransactionCryptoService } from '../../../../transaction/infrastructure/crypto/TransactionCryptoService';
+import type { ITransactionCryptoService } from '../../../../transaction/domain/services/ITransactionCryptoService';
 
 const OWNER_ID = '550e8400-e29b-41d4-a716-446655440000';
 const OTHER_USER_ID = '660e8400-e29b-41d4-a716-446655440001';
@@ -41,7 +41,7 @@ describe('ImportTransactionsCommandHandler', () => {
   let transactionRepository: jest.Mocked<ITransactionRepository>;
   let importLogRepository: jest.Mocked<IImportLogRepository>;
   let csvParser: jest.Mocked<ICsvParserService>;
-  let crypto: jest.Mocked<TransactionCryptoService>;
+  let crypto: jest.Mocked<ITransactionCryptoService>;
   let eventBus: { execute: jest.Mock };
 
   beforeEach(() => {
@@ -49,7 +49,7 @@ describe('ImportTransactionsCommandHandler', () => {
     transactionRepository = { saveBatch: jest.fn(), existsByHash: jest.fn(), sumByBankAccount: jest.fn() };
     importLogRepository = { save: jest.fn() };
     csvParser = { parse: jest.fn() };
-    crypto = { encrypt: jest.fn().mockReturnValue({ encrypted: 'enc', iv: 'iv' }), decrypt: jest.fn() } as unknown as jest.Mocked<TransactionCryptoService>;
+    crypto = { encrypt: jest.fn().mockReturnValue({ encrypted: 'enc', iv: 'iv' }), decrypt: jest.fn() } as jest.Mocked<ITransactionCryptoService>;
     eventBus = { execute: jest.fn().mockReturnValue(of(undefined)) };
 
     handler = new ImportTransactionsCommandHandler(

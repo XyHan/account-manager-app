@@ -10,14 +10,15 @@ import { TRANSACTION_REPOSITORY } from '../../../../transaction/domain/repositor
 import { Transaction } from '../../../../transaction/domain/entities/Transaction';
 import { TransactionId } from '../../../../transaction/domain/value-objects/TransactionId';
 import { TransactionHash } from '../../../../transaction/domain/value-objects/TransactionHash';
-import { TransactionCryptoService } from '../../../../transaction/infrastructure/crypto/TransactionCryptoService';
+import type { ITransactionCryptoService } from '../../../../transaction/domain/services/ITransactionCryptoService';
+import { TRANSACTION_CRYPTO_SERVICE } from '../../../../transaction/domain/services/ITransactionCryptoService';
 import type { ICsvParserService } from '../../../domain/services/ICsvParserService';
 import { CSV_PARSER_SERVICE } from '../../../domain/services/ICsvParserService';
 import type { IImportLogRepository } from '../../../domain/repositories/IImportLogRepository';
 import { IMPORT_LOG_REPOSITORY } from '../../../domain/repositories/IImportLogRepository';
 import { ImportLog } from '../../../domain/entities/ImportLog';
 import { ImportLogId } from '../../../domain/value-objects/ImportLogId';
-import { ImportCompleted } from '../../../domain/events/ImportCompleted';
+import { ImportCompleted } from '../../events/ImportCompleted';
 import { uuidV7 } from '../../../../_shared/domain/uuid/uuid-v7';
 import type { ImportTransactionsCommand } from './ImportTransactionsCommand';
 
@@ -32,7 +33,8 @@ export class ImportTransactionsCommandHandler implements CommandHandlerInterface
     private readonly importLogRepository: IImportLogRepository,
     @Inject(CSV_PARSER_SERVICE)
     private readonly csvParser: ICsvParserService,
-    private readonly crypto: TransactionCryptoService,
+    @Inject(TRANSACTION_CRYPTO_SERVICE)
+    private readonly crypto: ITransactionCryptoService,
     private readonly eventBus: EventBus,
   ) {}
 
