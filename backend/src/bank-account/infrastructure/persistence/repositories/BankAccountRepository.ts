@@ -33,6 +33,10 @@ export class BankAccountRepository implements IBankAccountRepository {
     return this.toDomain(entity);
   }
 
+  async delete(id: BankAccountId): Promise<void> {
+    await this.repository.delete({ id: id.toString() });
+  }
+
   private toDomain(entity: BankAccountOrmEntity): BankAccount {
     return BankAccount.reconstitute(
       BankAccountId.from(entity.id),

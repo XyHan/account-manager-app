@@ -13,6 +13,7 @@ import { catchError, EMPTY } from 'rxjs';
 import { BankAccountService } from '../services/bank-account.service';
 import type { BankAccountModel } from '../domain/models/bank-account.model';
 import { BankAccountFormComponent, type BankAccountFormDialogData } from '../bank-account-form/bank-account-form.component';
+import { BankAccountDeleteConfirmComponent, type BankAccountDeleteConfirmDialogData } from '../bank-account-delete-confirm/bank-account-delete-confirm.component';
 
 @Component({
   selector: 'app-bank-account-list',
@@ -64,6 +65,35 @@ export class BankAccountListComponent implements OnInit {
         this.translate.instant('common.confirm'),
         { duration: 3000 },
       );
+    });
+  }
+
+  openDeleteDialog(account: BankAccountModel): void {
+    const data: BankAccountDeleteConfirmDialogData = { account };
+    const ref = this.dialog.open(BankAccountDeleteConfirmComponent, { width: '440px', data });
+
+    ref.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((confirmed: boolean | undefined) => {
+      if (!confirmed) return;
+
+      this.bankAccountService.delete(account.id).pipe(
+        catchError(() => {
+          this.snackBar.open(
+            this.translate.instant('common.error'),
+            this.translate.instant('common.confirm'),
+            { duration: 3000 },
+          );
+          return EMPTY;
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      ).subscribe(() => {
+        this.accounts.update((list) => list.filter((a) => a.id !== account.id));
+        this.consolidatedBalance.update((total) => total - account.balance);
+        this.snackBar.open(
+          this.translate.instant('bankAccounts.list.deleteSuccess'),
+          this.translate.instant('common.confirm'),
+          { duration: 3000 },
+        );
+      });
     });
   }
 

@@ -43,6 +43,9 @@
           <button mat-icon-button class="card-edit-btn" [attr.aria-label]="'common.edit' | translate" (click)="openEditDialog(account)">
             <mat-icon>edit</mat-icon>
           </button>
+          <button mat-icon-button class="card-delete-btn" [attr.aria-label]="'common.delete' | translate" (click)="openDeleteDialog(account)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </mat-card-header>
         <mat-card-content>
           <p class="balance">{{ account.balance | number:'1.2-2' }} €</p>

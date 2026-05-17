@@ -49,7 +49,13 @@
       "empty": "Vous n'avez pas encore de compte bancaire.",
       "createSuccess": "Compte bancaire créé avec succès.",
       "editSuccess": "Compte bancaire modifié avec succès.",
+      "deleteSuccess": "Compte bancaire supprimé avec succès.",
       "consolidatedBalance": "Solde total consolidé"
+    },
+    "delete": {
+      "title": "Supprimer le compte bancaire",
+      "message": "Êtes-vous sûr de vouloir supprimer le compte « {{ name }} » ?",
+      "transactionWarning": "Toutes les transactions associées seront également supprimées."
     },
     "form": {
       "title": "Ajouter un compte bancaire",

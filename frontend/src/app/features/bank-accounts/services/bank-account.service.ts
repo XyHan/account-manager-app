@@ -18,4 +18,8 @@ export class BankAccountService {
   update(id: string, payload: UpdateBankAccountPayload): Observable<BankAccountModel> {
     return this.repository.update(id, payload);
   }
+
+  delete(id: string): Observable<void> {
+    return this.repository.delete(id);
+  }
 }

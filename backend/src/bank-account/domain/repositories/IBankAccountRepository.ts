@@ -6,4 +6,5 @@ export const BANK_ACCOUNT_REPOSITORY = 'IBankAccountRepository';
 export interface IBankAccountRepository {
   save(account: BankAccount): Promise<void>;
   findById(id: BankAccountId): Promise<BankAccount | null>;
+  delete(id: BankAccountId): Promise<void>;
 }

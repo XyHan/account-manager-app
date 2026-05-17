@@ -6,6 +6,7 @@ export interface IBankAccountRepository {
   findAll(): Observable<BankAccountListResponse>;
   create(payload: CreateBankAccountPayload): Observable<BankAccountModel>;
   update(id: string, payload: UpdateBankAccountPayload): Observable<BankAccountModel>;
+  delete(id: string): Observable<void>;
 }
 
 export const BANK_ACCOUNT_REPOSITORY = new InjectionToken<IBankAccountRepository>('IBankAccountRepository');

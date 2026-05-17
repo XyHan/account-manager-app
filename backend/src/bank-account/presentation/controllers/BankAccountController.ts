@@ -1,9 +1,10 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { CommandBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/command.bus';
 import { QueryBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/query.bus';
 import { CreateBankAccountCommand } from '../../application/commands/create-bank-account/CreateBankAccountCommand';
 import { UpdateBankAccountCommand } from '../../application/commands/update-bank-account/UpdateBankAccountCommand';
+import { DeleteBankAccountCommand } from '../../application/commands/delete-bank-account/DeleteBankAccountCommand';
 import { ListBankAccountsQuery } from '../../application/queries/list-bank-accounts/ListBankAccountsQuery';
 import { CreateBankAccountDto } from '../dto/CreateBankAccountDto';
 import { UpdateBankAccountDto } from '../dto/UpdateBankAccountDto';
@@ -60,6 +61,14 @@ export class BankAccountController {
       account.type.toString(),
       account.balance.toNumber(),
     ).serialize();
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@Req() req: AuthenticatedRequest, @Param('id') id: string): Promise<void> {
+    await lastValueFrom(
+      this.commandBus.execute(new DeleteBankAccountCommand(req.user.userId, id)),
+    );
   }
 
   @Post()

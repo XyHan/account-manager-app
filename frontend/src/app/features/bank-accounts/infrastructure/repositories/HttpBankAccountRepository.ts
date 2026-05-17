@@ -20,4 +20,8 @@ export class HttpBankAccountRepository implements IBankAccountRepository {
   update(id: string, payload: UpdateBankAccountPayload): Observable<BankAccountModel> {
     return this.http.patch<BankAccountModel>(`${environment.apiUrl}/bank-accounts/${id}`, payload);
   }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/bank-accounts/${id}`);
+  }
 }
