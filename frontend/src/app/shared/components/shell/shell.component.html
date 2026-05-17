@@ -27,15 +27,14 @@
 
     <div class="sidenav-footer">
       <button
-        mat-list-item
-        class="logout-btn"
+        class="logout-card"
         (click)="logout()"
         [matTooltip]="collapsed() ? ('nav.logout' | translate) : ''"
         matTooltipPosition="right"
       >
-        <mat-icon matListItemIcon>logout</mat-icon>
+        <mat-icon class="logout-icon">logout</mat-icon>
         @if (!collapsed()) {
-          <span matListItemTitle>{{ 'nav.logout' | translate }}</span>
+          <span class="logout-label">{{ 'nav.logout' | translate }}</span>
         }
       </button>
     </div>
