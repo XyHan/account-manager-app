@@ -31,8 +31,7 @@ export class TransactionCryptoService implements ITransactionCryptoService {
     const data = Buffer.from(encryptedWithTag, 'base64');
     const tag = data.subarray(data.length - 16);
     const encrypted = data.subarray(0, data.length - 16);
-    const decipher = createDecipheriv('aes-256-gcm', this.key, iv);
-    decipher.setAuthTagLength(16);
+    const decipher = createDecipheriv('aes-256-gcm', this.key, iv, { authTagLength: 16 });
     decipher.setAuthTag(tag);
     return decipher.update(encrypted) + decipher.final('utf8');
   }
