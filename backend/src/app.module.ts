@@ -5,8 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
 import { BankAccountModule } from './bank-account/bank-account.module';
+import { TransactionModule } from './transaction/transaction.module';
+import { ImportModule } from './import/import.module';
 import { UserOrmEntity } from './auth/infrastructure/persistence/orm-entities/UserOrmEntity';
 import { BankAccountOrmEntity } from './bank-account/infrastructure/persistence/orm-entities/BankAccountOrmEntity';
+import { TransactionOrmEntity } from './transaction/infrastructure/persistence/orm-entities/TransactionOrmEntity';
+import { ImportLogOrmEntity } from './import/infrastructure/persistence/orm-entities/ImportLogOrmEntity';
 import { OAuthClientOrmEntity } from './auth/infrastructure/persistence/orm-entities/OAuthClientOrmEntity';
 import { OAuthAuthorizationCodeOrmEntity } from './auth/infrastructure/persistence/orm-entities/OAuthAuthorizationCodeOrmEntity';
 import { OAuthTokenOrmEntity } from './auth/infrastructure/persistence/orm-entities/OAuthTokenOrmEntity';
@@ -34,6 +38,8 @@ import { EventLogOrmEntity } from './_shared/infrastructure/cqrs/orm-entities/Ev
           CommandLogOrmEntity,
           EventLogOrmEntity,
           BankAccountOrmEntity,
+          TransactionOrmEntity,
+          ImportLogOrmEntity,
         ],
         migrations: ['dist/database/migrations/*.js'],
         migrationsRun: true,
@@ -41,6 +47,8 @@ import { EventLogOrmEntity } from './_shared/infrastructure/cqrs/orm-entities/Ev
     }),
     AuthModule,
     BankAccountModule,
+    TransactionModule,
+    ImportModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

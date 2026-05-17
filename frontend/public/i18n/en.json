@@ -76,6 +76,19 @@
       "OTHER": "Other"
     }
   },
+  "import": {
+    "title": "Import transactions",
+    "accountLabel": "Bank account",
+    "submitButton": "Import",
+    "dropZone": {
+      "hint": "Drag a CSV file here or click to select",
+      "changeHint": "Click to change file"
+    },
+    "result": {
+      "added": "transaction(s) added",
+      "skipped": "duplicate(s) skipped"
+    }
+  },
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome",

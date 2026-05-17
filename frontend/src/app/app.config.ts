@@ -10,6 +10,8 @@ import { AUTH_REPOSITORY } from './features/auth/domain/repositories/IAuthReposi
 import { HttpAuthRepository } from './features/auth/infrastructure/repositories/HttpAuthRepository';
 import { BANK_ACCOUNT_REPOSITORY } from './features/bank-accounts/domain/repositories/IBankAccountRepository';
 import { HttpBankAccountRepository } from './features/bank-accounts/infrastructure/repositories/HttpBankAccountRepository';
+import { IMPORT_REPOSITORY } from './features/import/domain/repositories/IImportRepository';
+import { HttpImportRepository } from './features/import/infrastructure/repositories/HttpImportRepository';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -20,6 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor, errorInterceptor])),
     { provide: AUTH_REPOSITORY, useClass: HttpAuthRepository },
     { provide: BANK_ACCOUNT_REPOSITORY, useClass: HttpBankAccountRepository },
+    { provide: IMPORT_REPOSITORY, useClass: HttpImportRepository },
     provideTranslateService({ lang: 'fr' }),
     ...provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
   ],

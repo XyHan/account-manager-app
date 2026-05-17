@@ -76,6 +76,19 @@
       "OTHER": "Autre"
     }
   },
+  "import": {
+    "title": "Importer des transactions",
+    "accountLabel": "Compte bancaire",
+    "submitButton": "Importer",
+    "dropZone": {
+      "hint": "Glissez un fichier CSV ici ou cliquez pour sélectionner",
+      "changeHint": "Cliquez pour changer de fichier"
+    },
+    "result": {
+      "added": "transaction(s) ajoutée(s)",
+      "skipped": "doublon(s) ignoré(s)"
+    }
+  },
   "dashboard": {
     "title": "Tableau de bord",
     "welcome": "Bienvenue",

@@ -1,23 +1,23 @@
 # Story 3.1 — Import CSV
 
 **Epic :** Import de transactions
-**Statut :** À faire
+**Statut :** Terminé
 
 ## Description
 En tant qu'utilisateur, je veux importer un fichier CSV exporté depuis ma banque afin d'ajouter mes transactions sans saisie manuelle.
 
 ## Critères d'acceptation
-- [ ] L'endpoint POST `/import` accepte un fichier CSV (multipart/form-data) et un `bankAccountId`
-- [ ] Le parser détecte automatiquement le séparateur (virgule, point-virgule)
-- [ ] Chaque transaction importée contient : date, montant (positif = crédit, négatif = débit), libellé
-- [ ] Le libellé est chiffré en AES-256-GCM avant stockage (labelEncrypted + labelIv)
-- [ ] Les doublons sont détectés via un hash SHA-256(date + amount + label) par compte — les doublons sont ignorés
-- [ ] Un `ImportLog` est créé avec le résumé (addedCount, skippedCount, filename, format=CSV)
-- [ ] La commande `ImportTransactionsCommand` est persistée
-- [ ] L'événement `ImportCompleted` est dispatché et déclenche le recalcul du solde du compte
-- [ ] L'endpoint retourne 201 avec le résumé de l'import (ImportResultView)
-- [ ] Une page `/import` permet de sélectionner un compte et d'uploader un fichier CSV
-- [ ] Le résumé (transactions ajoutées / ignorées) est affiché après l'import
+- [x] L'endpoint POST `/import` accepte un fichier CSV (multipart/form-data) et un `bankAccountId`
+- [x] Le parser détecte automatiquement le séparateur (virgule, point-virgule)
+- [x] Chaque transaction importée contient : date, montant (positif = crédit, négatif = débit), libellé
+- [x] Le libellé est chiffré en AES-256-GCM avant stockage (labelEncrypted + labelIv)
+- [x] Les doublons sont détectés via un hash SHA-256(date + amount + label) par compte — les doublons sont ignorés
+- [x] Un `ImportLog` est créé avec le résumé (addedCount, skippedCount, filename, format=CSV)
+- [x] La commande `ImportTransactionsCommand` est persistée
+- [x] L'événement `ImportCompleted` est dispatché et déclenche le recalcul du solde du compte
+- [x] L'endpoint retourne 201 avec le résumé de l'import (ImportResultView)
+- [x] Une page `/import` permet de sélectionner un compte et d'uploader un fichier CSV
+- [x] Le résumé (transactions ajoutées / ignorées) est affiché après l'import
 
 ## Tâches techniques
 

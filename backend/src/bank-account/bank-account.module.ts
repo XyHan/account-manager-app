@@ -38,5 +38,9 @@ import { BANK_ACCOUNT_FINDER } from './domain/finders/IBankAccountFinder';
     { provide: BANK_ACCOUNT_REPOSITORY, useClass: BankAccountRepository },
     { provide: BANK_ACCOUNT_FINDER, useClass: BankAccountFinder },
   ],
+  exports: [
+    BANK_ACCOUNT_REPOSITORY,
+    BANK_ACCOUNT_FINDER,
+  ],
 })
 export class BankAccountModule {}

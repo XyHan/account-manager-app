@@ -70,6 +70,10 @@ export class BankAccount {
     this.addDomainEvent(new BankAccountDeleted(this._id.toString(), this._userId));
   }
 
+  recalculateBalance(newBalance: Balance): void {
+    this._balance = newBalance;
+  }
+
   pullDomainEvents(): EventInterface[] {
     const events = [...this.domainEvents];
     this.domainEvents.length = 0;
