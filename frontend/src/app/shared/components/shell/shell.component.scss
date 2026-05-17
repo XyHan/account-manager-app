@@ -51,11 +51,6 @@
 }
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
-mat-nav-list {
-  // Supprime le border-radius interne des list items Material (MDC)
-  --mdc-list-list-item-container-shape: 0px;
-}
-
 mat-nav-list a[mat-list-item] {
   color: var(--color-text-muted);
   margin: 0;
