@@ -43,7 +43,7 @@ describe('UpdateBankAccountCommandHandler', () => {
   let eventBus: { execute: jest.Mock };
 
   beforeEach(() => {
-    repository = { save: jest.fn(), findById: jest.fn() };
+    repository = { save: jest.fn(), findById: jest.fn(), delete: jest.fn() };
     eventBus = { execute: jest.fn().mockReturnValue(of(undefined)) };
     handler = new UpdateBankAccountCommandHandler(repository, eventBus as unknown as EventBus);
   });

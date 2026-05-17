@@ -1,0 +1,86 @@
+<div class="page-header">
+  <h1 class="page-title">{{ 'import.title' | translate }}</h1>
+</div>
+
+@if (result()) {
+  <mat-card class="result-card">
+    <mat-card-content>
+      <div class="result-row">
+        <mat-icon class="result-icon success">check_circle</mat-icon>
+        <div>
+          <p class="result-filename">{{ result()!.filename }}</p>
+          <p class="result-stat">
+            <strong>{{ result()!.addedCount }}</strong> {{ 'import.result.added' | translate }}
+          </p>
+          <p class="result-stat muted">
+            <strong>{{ result()!.skippedCount }}</strong> {{ 'import.result.skipped' | translate }}
+          </p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+}
+
+<mat-card class="import-card">
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      @if (loadingAccounts()) {
+        <div class="loading-accounts">
+          <mat-spinner diameter="24" />
+        </div>
+      } @else {
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'import.accountLabel' | translate }}</mat-label>
+          <mat-select formControlName="bankAccountId">
+            @for (account of accounts(); track account.id) {
+              <mat-option [value]="account.id">{{ account.name }} — {{ account.bank }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+
+      <div
+        class="drop-zone"
+        [class.has-file]="selectedFile()"
+        (drop)="onDrop($event)"
+        (dragover)="onDragOver($event)"
+      >
+        @if (selectedFile()) {
+          <mat-icon>description</mat-icon>
+          <p class="file-name">{{ selectedFile()!.name }}</p>
+          <p class="file-hint">{{ 'import.dropZone.changeHint' | translate }}</p>
+        } @else {
+          <mat-icon>upload_file</mat-icon>
+          <p>{{ 'import.dropZone.hint' | translate }}</p>
+        }
+
+        <input
+          type="file"
+          accept=".csv,text/csv"
+          class="file-input"
+          (change)="onFileSelected($event)"
+        />
+      </div>
+
+      @if (uploadError()) {
+        <p class="upload-error">{{ 'common.error' | translate }}</p>
+      }
+
+      <button
+        mat-flat-button
+        type="submit"
+        class="submit-btn"
+        [disabled]="form.invalid || !selectedFile() || uploading()"
+      >
+        @if (uploading()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          <mat-icon>upload</mat-icon>
+          {{ 'import.submitButton' | translate }}
+        }
+      </button>
+
+    </form>
+  </mat-card-content>
+</mat-card>

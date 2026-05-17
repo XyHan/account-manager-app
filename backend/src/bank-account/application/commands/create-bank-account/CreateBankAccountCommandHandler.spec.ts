@@ -23,7 +23,7 @@ describe('CreateBankAccountCommandHandler', () => {
   let eventBus: { execute: jest.Mock };
 
   beforeEach(() => {
-    bankAccountRepository = { save: jest.fn(), findById: jest.fn() };
+    bankAccountRepository = { save: jest.fn(), findById: jest.fn(), delete: jest.fn() };
     eventBus = { execute: jest.fn().mockReturnValue(of(undefined)) };
 
     handler = new CreateBankAccountCommandHandler(

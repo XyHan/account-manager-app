@@ -38,6 +38,11 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'import',
+        loadComponent: () =>
+          import('./features/import/import/import.component').then((m) => m.ImportComponent),
+      },
+      {
         path: 'profile/change-password',
         loadComponent: () =>
           import('./features/profile/change-password/change-password.component').then(
