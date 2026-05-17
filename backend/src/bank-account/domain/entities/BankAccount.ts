@@ -4,6 +4,7 @@ import { BankName } from '../value-objects/BankName';
 import { AccountType } from '../value-objects/AccountType';
 import { Balance } from '../value-objects/Balance';
 import { BankAccountCreated } from '../events/BankAccountCreated';
+import { BankAccountUpdated } from '../events/BankAccountUpdated';
 
 export class BankAccount {
   private readonly domainEvents: EventInterface[] = [];
@@ -11,9 +12,9 @@ export class BankAccount {
   private constructor(
     private readonly _id: BankAccountId,
     private readonly _userId: string,
-    private readonly _name: BankName,
-    private readonly _bank: BankName,
-    private readonly _type: AccountType,
+    private _name: BankName,
+    private _bank: BankName,
+    private _type: AccountType,
     private _balance: Balance,
     private readonly _createdAt: Date,
     private readonly _updatedAt: Date,
@@ -54,6 +55,15 @@ export class BankAccount {
   get balance(): Balance { return this._balance; }
   get createdAt(): Date { return this._createdAt; }
   get updatedAt(): Date { return this._updatedAt; }
+
+  update(name: BankName, bank: BankName, type: AccountType): void {
+    this._name = name;
+    this._bank = bank;
+    this._type = type;
+    this.addDomainEvent(
+      new BankAccountUpdated(this._id.toString(), this._userId, name.toString(), bank.toString(), type.toString()),
+    );
+  }
 
   pullDomainEvents(): EventInterface[] {
     const events = [...this.domainEvents];

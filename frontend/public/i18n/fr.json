@@ -48,10 +48,12 @@
       "addButton": "Ajouter un compte",
       "empty": "Vous n'avez pas encore de compte bancaire.",
       "createSuccess": "Compte bancaire créé avec succès.",
+      "editSuccess": "Compte bancaire modifié avec succès.",
       "consolidatedBalance": "Solde total consolidé"
     },
     "form": {
       "title": "Ajouter un compte bancaire",
+      "editTitle": "Modifier un compte bancaire",
       "nameLabel": "Nom du compte",
       "bankLabel": "Banque",
       "typeLabel": "Type de compte",

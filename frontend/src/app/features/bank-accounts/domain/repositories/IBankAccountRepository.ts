@@ -1,10 +1,11 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
-import type { BankAccountListResponse, BankAccountModel, CreateBankAccountPayload } from '../models/bank-account.model';
+import type { BankAccountListResponse, BankAccountModel, CreateBankAccountPayload, UpdateBankAccountPayload } from '../models/bank-account.model';
 
 export interface IBankAccountRepository {
   findAll(): Observable<BankAccountListResponse>;
   create(payload: CreateBankAccountPayload): Observable<BankAccountModel>;
+  update(id: string, payload: UpdateBankAccountPayload): Observable<BankAccountModel>;
 }
 
 export const BANK_ACCOUNT_REPOSITORY = new InjectionToken<IBankAccountRepository>('IBankAccountRepository');

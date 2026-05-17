@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -10,6 +10,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BankAccountService } from '../services/bank-account.service';
 import type { BankAccountModel, AccountType } from '../domain/models/bank-account.model';
+
+export interface BankAccountFormDialogData {
+  account?: BankAccountModel;
+}
 
 @Component({
   selector: 'app-bank-account-form',
@@ -31,16 +35,18 @@ export class BankAccountFormComponent {
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<BankAccountFormComponent>);
   private readonly bankAccountService = inject(BankAccountService);
+  protected readonly data: BankAccountFormDialogData = inject(MAT_DIALOG_DATA, { optional: true }) ?? {};
 
   protected readonly loading = signal(false);
   protected readonly apiError = signal<string | null>(null);
 
   protected readonly accountTypes: AccountType[] = ['CHECKING', 'SAVINGS', 'OTHER'];
+  protected readonly isEditMode = !!this.data.account;
 
   protected readonly form = this.fb.group({
-    name: ['', [Validators.required]],
-    bank: ['', [Validators.required]],
-    type: ['' as AccountType, [Validators.required]],
+    name: [this.data.account?.name ?? '', [Validators.required]],
+    bank: [this.data.account?.bank ?? '', [Validators.required]],
+    type: [(this.data.account?.type ?? '') as AccountType, [Validators.required]],
   });
 
   submit(): void {
@@ -54,13 +60,23 @@ export class BankAccountFormComponent {
 
     const { name, bank, type } = this.form.getRawValue();
 
-    this.bankAccountService.create({ name: name!, bank: bank!, type: type! }).subscribe({
-      next: (account: BankAccountModel) => this.dialogRef.close(account),
-      error: (err: HttpErrorResponse) => {
-        this.loading.set(false);
-        this.apiError.set(err.status >= 500 ? 'common.error' : 'bankAccounts.form.errors.generic');
-      },
-    });
+    if (this.isEditMode) {
+      this.bankAccountService.update(this.data.account!.id, { name: name!, bank: bank!, type: type! }).subscribe({
+        next: (updated: BankAccountModel) => this.dialogRef.close(updated),
+        error: (err: HttpErrorResponse) => {
+          this.loading.set(false);
+          this.apiError.set(err.status >= 500 ? 'common.error' : 'bankAccounts.form.errors.generic');
+        },
+      });
+    } else {
+      this.bankAccountService.create({ name: name!, bank: bank!, type: type! }).subscribe({
+        next: (account: BankAccountModel) => this.dialogRef.close(account),
+        error: (err: HttpErrorResponse) => {
+          this.loading.set(false);
+          this.apiError.set(err.status >= 500 ? 'common.error' : 'bankAccounts.form.errors.generic');
+        },
+      });
+    }
   }
 
   cancel(): void {

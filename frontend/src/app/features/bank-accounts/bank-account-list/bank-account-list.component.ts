@@ -14,7 +14,7 @@ import { BANK_ACCOUNT_REPOSITORY } from '../domain/repositories/IBankAccountRepo
 import { HttpBankAccountRepository } from '../infrastructure/repositories/HttpBankAccountRepository';
 import { BankAccountService } from '../services/bank-account.service';
 import type { BankAccountModel } from '../domain/models/bank-account.model';
-import { BankAccountFormComponent } from '../bank-account-form/bank-account-form.component';
+import { BankAccountFormComponent, type BankAccountFormDialogData } from '../bank-account-form/bank-account-form.component';
 
 @Component({
   selector: 'app-bank-account-list',
@@ -66,6 +66,21 @@ export class BankAccountListComponent implements OnInit {
       this.consolidatedBalance.update((total) => total + created.balance);
       this.snackBar.open(
         this.translate.instant('bankAccounts.list.createSuccess'),
+        this.translate.instant('common.confirm'),
+        { duration: 3000 },
+      );
+    });
+  }
+
+  openEditDialog(account: BankAccountModel): void {
+    const data: BankAccountFormDialogData = { account };
+    const ref = this.dialog.open(BankAccountFormComponent, { width: '480px', data });
+
+    ref.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((updated: BankAccountModel | undefined) => {
+      if (!updated) return;
+      this.accounts.update((list) => list.map((a) => (a.id === updated.id ? updated : a)));
+      this.snackBar.open(
+        this.translate.instant('bankAccounts.list.editSuccess'),
         this.translate.instant('common.confirm'),
         { duration: 3000 },
       );

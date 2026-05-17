@@ -10,6 +10,7 @@ import { BankAccountOrmEntity } from './infrastructure/persistence/orm-entities/
 import { BankAccountRepository } from './infrastructure/persistence/repositories/BankAccountRepository';
 import { BankAccountFinder } from './infrastructure/persistence/finders/BankAccountFinder';
 import { CreateBankAccountCommandHandler } from './application/commands/create-bank-account/CreateBankAccountCommandHandler';
+import { UpdateBankAccountCommandHandler } from './application/commands/update-bank-account/UpdateBankAccountCommandHandler';
 import { ListBankAccountsQueryHandler } from './application/queries/list-bank-accounts/ListBankAccountsQueryHandler';
 import { GetConsolidatedBalanceQueryHandler } from './application/queries/get-consolidated-balance/GetConsolidatedBalanceQueryHandler';
 import { BankAccountController } from './presentation/controllers/BankAccountController';
@@ -29,6 +30,7 @@ import { BANK_ACCOUNT_FINDER } from './domain/finders/IBankAccountFinder';
   controllers: [BankAccountController],
   providers: [
     CreateBankAccountCommandHandler,
+    UpdateBankAccountCommandHandler,
     ListBankAccountsQueryHandler,
     GetConsolidatedBalanceQueryHandler,
     { provide: BANK_ACCOUNT_REPOSITORY, useClass: BankAccountRepository },
