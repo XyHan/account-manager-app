@@ -5,6 +5,7 @@ import { AccountType } from '../value-objects/AccountType';
 import { Balance } from '../value-objects/Balance';
 import { BankAccountCreated } from '../events/BankAccountCreated';
 import { BankAccountUpdated } from '../events/BankAccountUpdated';
+import { BankAccountDeleted } from '../events/BankAccountDeleted';
 
 export class BankAccount {
   private readonly domainEvents: EventInterface[] = [];
@@ -63,6 +64,10 @@ export class BankAccount {
     this.addDomainEvent(
       new BankAccountUpdated(this._id.toString(), this._userId, name.toString(), bank.toString(), type.toString()),
     );
+  }
+
+  delete(): void {
+    this.addDomainEvent(new BankAccountDeleted(this._id.toString(), this._userId));
   }
 
   pullDomainEvents(): EventInterface[] {

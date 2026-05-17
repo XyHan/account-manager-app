@@ -21,8 +21,9 @@ const mockListResponse: BankAccountListResponse = {
 const findAllSpy = vi.fn().mockReturnValue(of(mockListResponse));
 const createSpy = vi.fn().mockReturnValue(of(mockAccount));
 const updateSpy = vi.fn().mockReturnValue(of(mockAccount));
+const deleteSpy = vi.fn().mockReturnValue(of(undefined));
 
-const repositoryStub = { findAll: findAllSpy, create: createSpy, update: updateSpy };
+const repositoryStub = { findAll: findAllSpy, create: createSpy, update: updateSpy, delete: deleteSpy };
 
 describe('BankAccountService', () => {
   let service: BankAccountService;
@@ -31,6 +32,7 @@ describe('BankAccountService', () => {
     findAllSpy.mockReset().mockReturnValue(of(mockListResponse));
     createSpy.mockReset().mockReturnValue(of(mockAccount));
     updateSpy.mockReset().mockReturnValue(of(mockAccount));
+    deleteSpy.mockReset().mockReturnValue(of(undefined));
 
     TestBed.configureTestingModule({
       providers: [
@@ -82,6 +84,19 @@ describe('BankAccountService', () => {
     it('propagates repository errors', async () => {
       updateSpy.mockReturnValue(throwError(() => new Error('Network error')));
       await expect(firstValueFrom(service.update('abc-123', { name: 'x' }))).rejects.toThrow('Network error');
+    });
+  });
+
+  describe('delete', () => {
+    it('delegates to repository with the correct id', async () => {
+      await firstValueFrom(service.delete('abc-123'));
+      expect(deleteSpy).toHaveBeenCalledWith('abc-123');
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('propagates repository errors', async () => {
+      deleteSpy.mockReturnValue(throwError(() => new Error('Network error')));
+      await expect(firstValueFrom(service.delete('abc-123'))).rejects.toThrow('Network error');
     });
   });
 });
