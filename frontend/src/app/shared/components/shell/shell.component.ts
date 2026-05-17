@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,7 +25,6 @@ interface NavItem {
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    MatSidenavModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,

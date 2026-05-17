@@ -3,18 +3,22 @@
   height: 100%;
 }
 
+// ─── Layout principal ─────────────────────────────────────────────────────────
 .shell-container {
+  display: flex;
   height: 100%;
 }
 
 // ─── Sidenav ──────────────────────────────────────────────────────────────────
 .shell-sidenav {
   width: 240px;
+  flex-shrink: 0;
   background-color: var(--color-sidebar);
   border-right: 1px solid var(--color-border);
   transition: width 0.2s ease;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   &.collapsed {
     width: 64px;
@@ -49,9 +53,8 @@
 
   .logout-btn {
     color: var(--color-text-muted);
-    border-radius: 8px;
-    margin: 2px 8px;
-    width: calc(100% - 16px);
+    margin: 2px 0;
+    width: 100%;
     transition: background-color 0.15s ease, color 0.15s ease;
 
     &:hover {
@@ -68,8 +71,7 @@
 // ─── Nav items ────────────────────────────────────────────────────────────────
 mat-nav-list a[mat-list-item] {
   color: var(--color-text-muted);
-  border-radius: 8px;
-  margin: 2px 8px;
+  margin: 2px 0;
   transition: background-color 0.15s ease, color 0.15s ease;
 
   &:hover {
@@ -111,9 +113,12 @@ mat-nav-list a[mat-list-item] {
 
 // ─── Main content ─────────────────────────────────────────────────────────────
 .shell-content {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg);
+  overflow: hidden;
 }
 
 .shell-main {

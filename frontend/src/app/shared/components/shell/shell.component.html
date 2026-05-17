@@ -1,10 +1,5 @@
-<mat-sidenav-container class="shell-container">
-  <mat-sidenav
-    class="shell-sidenav"
-    [class.collapsed]="collapsed()"
-    mode="side"
-    opened
-  >
+<div class="shell-container">
+  <aside class="shell-sidenav" [class.collapsed]="collapsed()">
     <div class="sidenav-header">
       @if (!collapsed()) {
         <span class="logo">Account Manager</span>
@@ -44,9 +39,9 @@
         }
       </button>
     </div>
-  </mat-sidenav>
+  </aside>
 
-  <mat-sidenav-content class="shell-content">
+  <div class="shell-content">
     <mat-toolbar class="shell-toolbar">
       <button mat-icon-button (click)="toggleSidebar()" aria-label="Toggle sidebar">
         <mat-icon>menu</mat-icon>
@@ -83,5 +78,5 @@
     <main class="shell-main">
       <router-outlet />
     </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  </div>
+</div>
