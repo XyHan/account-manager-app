@@ -1,10 +1,5 @@
-<mat-sidenav-container class="shell-container">
-  <mat-sidenav
-    class="shell-sidenav"
-    [class.collapsed]="collapsed()"
-    mode="side"
-    opened
-  >
+<div class="shell-container">
+  <aside class="shell-sidenav" [class.collapsed]="collapsed()">
     <div class="sidenav-header">
       @if (!collapsed()) {
         <span class="logo">Account Manager</span>
@@ -32,21 +27,20 @@
 
     <div class="sidenav-footer">
       <button
-        mat-list-item
-        class="logout-btn"
+        class="logout-card"
         (click)="logout()"
         [matTooltip]="collapsed() ? ('nav.logout' | translate) : ''"
         matTooltipPosition="right"
       >
-        <mat-icon matListItemIcon>logout</mat-icon>
+        <mat-icon class="logout-icon">logout</mat-icon>
         @if (!collapsed()) {
-          <span matListItemTitle>{{ 'nav.logout' | translate }}</span>
+          <span class="logout-label">{{ 'nav.logout' | translate }}</span>
         }
       </button>
     </div>
-  </mat-sidenav>
+  </aside>
 
-  <mat-sidenav-content class="shell-content">
+  <div class="shell-content">
     <mat-toolbar class="shell-toolbar">
       <button mat-icon-button (click)="toggleSidebar()" aria-label="Toggle sidebar">
         <mat-icon>menu</mat-icon>
@@ -83,5 +77,5 @@
     <main class="shell-main">
       <router-outlet />
     </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  </div>
+</div>

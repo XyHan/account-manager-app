@@ -81,6 +81,25 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+// ─── Shell nav — suppression du border-radius Material MDC ───────────────────
+// Material M3 définit --mdc-list-list-item-container-shape sur .mat-mdc-list-item
+// lui-même, ce qui écrase la valeur héritée d'un parent. On doit surcharger
+// à même niveau de spécificité, depuis les styles globaux.
+.shell-sidenav {
+  .mat-mdc-nav-list .mat-mdc-list-item {
+    --mdc-list-list-item-container-shape: 0px;
+    border-radius: 0;
+
+    &::before {
+      border-radius: 0;
+    }
+  }
+
+  .mat-mdc-list-ripple {
+    border-radius: 0;
+  }
+}
+
 // ─── Typography helpers ───────────────────────────────────────────────────────
 .text-muted   { color: var(--color-text-muted); }
 .text-income  { color: var(--color-income); }
