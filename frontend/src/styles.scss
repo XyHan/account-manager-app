@@ -86,8 +86,7 @@ body {
 // lui-même, ce qui écrase la valeur héritée d'un parent. On doit surcharger
 // à même niveau de spécificité, depuis les styles globaux.
 .shell-sidenav {
-  .mat-mdc-list-item,
-  .mat-mdc-list-item-interactive {
+  .mat-mdc-nav-list .mat-mdc-list-item {
     --mdc-list-list-item-container-shape: 0px;
     border-radius: 0;
 
