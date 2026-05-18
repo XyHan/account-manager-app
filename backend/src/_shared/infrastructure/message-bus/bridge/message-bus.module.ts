@@ -5,6 +5,8 @@ import { CommandBus } from './bus/command.bus';
 import { QueryBus } from './bus/query.bus';
 import { EventBus } from './bus/event.bus';
 import { ModuleRefAdapter } from './adapter/module-ref.adapter';
+import { COMMAND_BUS } from '../../../domain/bus/ICommandBus';
+import { QUERY_BUS } from '../../../domain/bus/IQueryBus';
 
 @Module({})
 export class MessageBusModule {
@@ -43,8 +45,10 @@ export class MessageBusModule {
         QueryBus,
         EventBus,
         ModuleRefAdapter,
+        { provide: COMMAND_BUS, useExisting: CommandBus },
+        { provide: QUERY_BUS, useExisting: QueryBus },
       ],
-      exports: [CommandBus, QueryBus, EventBus],
+      exports: [CommandBus, QueryBus, EventBus, COMMAND_BUS, QUERY_BUS],
     };
   }
 }

@@ -6,6 +6,7 @@ import {
   Header,
   HttpCode,
   HttpStatus,
+  Inject,
   Ip,
   Patch,
   Post,
@@ -18,8 +19,8 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 import { lastValueFrom } from 'rxjs';
-import { CommandBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/command.bus';
-import { QueryBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/query.bus';
+import { COMMAND_BUS, type ICommandBus } from '../../../_shared/domain/bus/ICommandBus';
+import { QUERY_BUS, type IQueryBus } from '../../../_shared/domain/bus/IQueryBus';
 import { RegisterUserCommand } from '../../application/commands/register-user/RegisterUserCommand';
 import { ChangePasswordCommand } from '../../application/commands/change-password/ChangePasswordCommand';
 import { ChangePasswordDto } from '../dto/ChangePasswordDto';
@@ -45,8 +46,8 @@ const REFRESH_TOKEN_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
+    @Inject(COMMAND_BUS) private readonly commandBus: ICommandBus,
+    @Inject(QUERY_BUS) private readonly queryBus: IQueryBus,
     private readonly oauthService: OAuthService,
   ) {}
 

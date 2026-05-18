@@ -4,6 +4,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Inject,
   Post,
   Req,
   UploadedFile,
@@ -12,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { lastValueFrom } from 'rxjs';
-import { CommandBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/command.bus';
+import { COMMAND_BUS, type ICommandBus } from '../../../_shared/domain/bus/ICommandBus';
 import { ImportTransactionsCommand } from '../../application/commands/import-transactions/ImportTransactionsCommand';
 import { ImportResultView } from '../view/ImportResultView';
 import { ImportTransactionsDto } from '../dto/ImportTransactionsDto';
@@ -32,7 +33,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 @Roles(RoleEnum.USER, RoleEnum.ADMIN)
 @Controller('import')
 export class ImportController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(@Inject(COMMAND_BUS) private readonly commandBus: ICommandBus) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
