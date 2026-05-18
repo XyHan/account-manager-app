@@ -12,31 +12,11 @@ import { UserLoggedIn } from '../../domain/events/UserLoggedIn';
 import { EventBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/event.bus';
 import type { RoleEnum } from '../../domain/value-objects/Role';
 import type { ITokenRevoker } from '../../domain/repositories/ITokenRevoker';
-
-export interface ClientData {
-  clientId: string;
-  redirectUris: string[];
-  grants: string[];
-  scopes: string[];
-}
-
-export interface TokenData {
-  userId: string;
-  scope: string;
-  userRole: RoleEnum;
-}
-
-export interface TokenResult {
-  accessToken: string;
-  refreshToken: string;
-  accessTokenExpiresAt: Date;
-  refreshTokenExpiresAt: Date;
-  scope: string;
-  userId: string;
-}
+import type { IOAuthService } from '../../domain/services/IOAuthService';
+import type { ClientData, TokenData, TokenResult } from '../../domain/models/OAuthModels';
 
 @Injectable()
-export class OAuthService implements ITokenRevoker {
+export class OAuthService implements IOAuthService, ITokenRevoker {
   private static readonly ACCESS_TOKEN_TTL_MS = 15 * 60 * 1000;
   private static readonly REFRESH_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
   private static readonly AUTH_CODE_TTL_MS = 5 * 60 * 1000;
@@ -64,12 +44,12 @@ export class OAuthService implements ITokenRevoker {
     };
   }
 
-  async validateCredentials(email: string, password: string): Promise<UserOrmEntity | null> {
+  async validateCredentials(email: string, password: string): Promise<{ id: string; role: RoleEnum } | null> {
     const user = await this.userRepo.findOne({ where: { email } });
     if (!user) return null;
     const hashedPassword = HashedPassword.fromHash(user.passwordHash);
     const valid = await hashedPassword.verify(password);
-    return valid ? user : null;
+    return valid ? { id: user.id, role: user.role } : null;
   }
 
   async generateAuthorizationCode(

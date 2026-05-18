@@ -6,9 +6,11 @@ import type { MiddlewareStack } from '../../middleware/middleware.stack';
 import type { QueryInterface } from '../../query/query.interface';
 import type { ContainerInterface } from '../../service/container.interface';
 import { ModuleRefAdapter } from '../adapter/module-ref.adapter';
+import type { IQueryBus } from '../../../../domain/bus/IQueryBus';
+import type { IQuery } from '../../../../domain/bus/IQuery';
 
 @Injectable()
-export class QueryBus implements MessageBusInterface {
+export class QueryBus implements MessageBusInterface, IQueryBus {
   private readonly queryBus: DomainQueryBus;
 
   constructor(
@@ -18,7 +20,7 @@ export class QueryBus implements MessageBusInterface {
     this.queryBus = new DomainQueryBus(container, middlewares);
   }
 
-  execute(query: QueryInterface): Observable<unknown> {
-    return this.queryBus.execute(query);
+  execute(query: IQuery): Observable<unknown> {
+    return this.queryBus.execute(query as QueryInterface);
   }
 }

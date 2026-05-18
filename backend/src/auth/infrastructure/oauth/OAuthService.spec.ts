@@ -90,11 +90,14 @@ describe('OAuthService', () => {
       expect(await service.validateCredentials('x@x.com', 'wrong-pass')).toBeNull();
     });
 
-    it('returns user when credentials are valid', async () => {
+    it('returns { id, role } when credentials are valid', async () => {
       const hash = await bcrypt.hash('correct-pass', 1);
       const user = { id: 'uid', email: 'x@x.com', passwordHash: hash, role: RoleEnum.USER };
       userRepo.findOne.mockResolvedValue(user);
-      expect(await service.validateCredentials('x@x.com', 'correct-pass')).toEqual(user);
+      expect(await service.validateCredentials('x@x.com', 'correct-pass')).toEqual({
+        id: 'uid',
+        role: RoleEnum.USER,
+      });
     });
   });
 

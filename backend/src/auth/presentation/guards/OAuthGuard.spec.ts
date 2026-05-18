@@ -1,6 +1,6 @@
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { OAuthGuard } from './OAuthGuard';
-import type { OAuthService } from '../../infrastructure/oauth/OAuthService';
+import type { IOAuthService } from '../../domain/services/IOAuthService';
 import { RoleEnum } from '../../domain/value-objects/Role';
 
 function makeContext(cookies: Record<string, string>): ExecutionContext {
@@ -13,11 +13,11 @@ function makeContext(cookies: Record<string, string>): ExecutionContext {
 
 describe('OAuthGuard', () => {
   let guard: OAuthGuard;
-  let oauthService: jest.Mocked<Pick<OAuthService, 'validateAccessToken'>>;
+  let oauthService: jest.Mocked<Pick<IOAuthService, 'validateAccessToken'>>;
 
   beforeEach(() => {
     oauthService = { validateAccessToken: jest.fn() };
-    guard = new OAuthGuard(oauthService as unknown as OAuthService);
+    guard = new OAuthGuard(oauthService as unknown as IOAuthService);
   });
 
   it('throws UnauthorizedException when cookie is absent', async () => {

@@ -6,6 +6,7 @@ import {
   Header,
   HttpCode,
   HttpStatus,
+  Inject,
   Ip,
   Patch,
   Post,
@@ -18,8 +19,8 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 import { lastValueFrom } from 'rxjs';
-import { CommandBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/command.bus';
-import { QueryBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/query.bus';
+import { COMMAND_BUS, type ICommandBus } from '../../../_shared/domain/bus/ICommandBus';
+import { QUERY_BUS, type IQueryBus } from '../../../_shared/domain/bus/IQueryBus';
 import { RegisterUserCommand } from '../../application/commands/register-user/RegisterUserCommand';
 import { ChangePasswordCommand } from '../../application/commands/change-password/ChangePasswordCommand';
 import { ChangePasswordDto } from '../dto/ChangePasswordDto';
@@ -30,7 +31,7 @@ import { RegisterDto } from '../dto/RegisterDto';
 import { AuthorizeQueryDto } from '../dto/AuthorizeQueryDto';
 import { SubmitAuthorizeDto } from '../dto/SubmitAuthorizeDto';
 import { TokenDto } from '../dto/TokenDto';
-import { OAuthService } from '../../infrastructure/oauth/OAuthService';
+import { OAUTH_SERVICE, type IOAuthService } from '../../domain/services/IOAuthService';
 import { OAuthGuard } from '../guards/OAuthGuard';
 import { ScopesGuard } from '../guards/ScopesGuard';
 import { RolesGuard } from '../guards/RolesGuard';
@@ -45,9 +46,9 @@ const REFRESH_TOKEN_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
-    private readonly oauthService: OAuthService,
+    @Inject(COMMAND_BUS) private readonly commandBus: ICommandBus,
+    @Inject(QUERY_BUS) private readonly queryBus: IQueryBus,
+    @Inject(OAUTH_SERVICE) private readonly oauthService: IOAuthService,
   ) {}
 
   @Post('register')

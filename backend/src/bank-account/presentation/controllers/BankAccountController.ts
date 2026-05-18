@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
-import { CommandBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/command.bus';
-import { QueryBus } from '../../../_shared/infrastructure/message-bus/bridge/bus/query.bus';
+import { COMMAND_BUS, type ICommandBus } from '../../../_shared/domain/bus/ICommandBus';
+import { QUERY_BUS, type IQueryBus } from '../../../_shared/domain/bus/IQueryBus';
 import { CreateBankAccountCommand } from '../../application/commands/create-bank-account/CreateBankAccountCommand';
 import { UpdateBankAccountCommand } from '../../application/commands/update-bank-account/UpdateBankAccountCommand';
 import { DeleteBankAccountCommand } from '../../application/commands/delete-bank-account/DeleteBankAccountCommand';
@@ -27,8 +27,8 @@ import { uuidV7 } from '../../../_shared/domain/uuid/uuid-v7';
 @Controller('bank-accounts')
 export class BankAccountController {
   constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
+    @Inject(COMMAND_BUS) private readonly commandBus: ICommandBus,
+    @Inject(QUERY_BUS) private readonly queryBus: IQueryBus,
   ) {}
 
   @Get()

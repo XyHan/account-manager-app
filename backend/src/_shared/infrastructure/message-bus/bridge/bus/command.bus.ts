@@ -6,9 +6,11 @@ import type { MiddlewareStack } from '../../middleware/middleware.stack';
 import type { CommandInterface } from '../../command/command.interface';
 import type { ContainerInterface } from '../../service/container.interface';
 import { ModuleRefAdapter } from '../adapter/module-ref.adapter';
+import type { ICommandBus } from '../../../../domain/bus/ICommandBus';
+import type { ICommand } from '../../../../domain/bus/ICommand';
 
 @Injectable()
-export class CommandBus implements MessageBusInterface {
+export class CommandBus implements MessageBusInterface, ICommandBus {
   private readonly commandBus: DomainCommandBus;
 
   constructor(
@@ -18,7 +20,7 @@ export class CommandBus implements MessageBusInterface {
     this.commandBus = new DomainCommandBus(container, middlewares);
   }
 
-  execute(command: CommandInterface): Observable<unknown> {
-    return this.commandBus.execute(command);
+  execute(command: ICommand): Observable<unknown> {
+    return this.commandBus.execute(command as CommandInterface);
   }
 }
