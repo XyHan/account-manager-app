@@ -688,3 +688,9 @@ Police : **Inter** (Google Fonts), fallback `system-ui, sans-serif`.
 - **Contexte :** Préparation au multi-utilisateurs avec administration.
 - **Décision :** Enum `Role { USER, ADMIN }` sur l'entité `User`. Tout nouvel utilisateur reçoit `USER` par défaut. `RolesGuard` appliqué après `ScopesGuard`.
 - **Conséquences :** Les routes ADMIN ne sont pas exposées en phase 1 mais la structure est prête.
+
+### ADR-011 — Tokens d'injection symboliques pour les buses et services d'infrastructure
+- **Statut :** Accepté
+- **Contexte :** Audit Clean Architecture (2026-05-17) : `AuthController`, `BankAccountController` et `ImportController` importaient directement les classes `CommandBus`/`QueryBus` depuis `_shared/infrastructure/`. `AuthController` et `OAuthGuard` importaient directement `OAuthService` depuis `auth/infrastructure/`. Violation de la dependency rule : la présentation ne doit pas dépendre de l'infrastructure.
+- **Décision :** (1) Créer `_shared/domain/bus/ICommandBus`, `IQueryBus`, `ICommand`, `IQuery` avec tokens symboliques `COMMAND_BUS`/`QUERY_BUS`. Les classes infra déclarent `implements ICommandBus`/`IQueryBus`. `MessageBusModule` expose les tokens via `useExisting`. (2) Créer `auth/domain/services/IOAuthService` avec token `OAUTH_SERVICE`. Les controllers et guards injectent via `@Inject(TOKEN) service: IInterface`.
+- **Conséquences :** Présentation découplée de l'infrastructure. Les mocks de tests ciblent les interfaces. Aucune logique métier ni migration de base de données affectées.
