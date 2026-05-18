@@ -22,6 +22,7 @@ import { RolesGuard } from './presentation/guards/RolesGuard';
 import { USER_REPOSITORY } from './domain/repositories/IUserRepository';
 import { USER_FINDER } from './domain/finders/IUserFinder';
 import { TOKEN_REVOKER } from './domain/repositories/ITokenRevoker';
+import { OAUTH_SERVICE } from './domain/services/IOAuthService';
 
 @Module({
   imports: [
@@ -48,8 +49,9 @@ import { TOKEN_REVOKER } from './domain/repositories/ITokenRevoker';
     RolesGuard,
     { provide: USER_REPOSITORY, useClass: UserRepository },
     { provide: USER_FINDER, useClass: UserFinder },
-    { provide: TOKEN_REVOKER, useClass: OAuthService },
+    { provide: TOKEN_REVOKER, useExisting: OAuthService },
+    { provide: OAUTH_SERVICE, useExisting: OAuthService },
   ],
-  exports: [OAuthService, OAuthGuard, ScopesGuard, RolesGuard],
+  exports: [OAuthGuard, ScopesGuard, RolesGuard],
 })
 export class AuthModule {}

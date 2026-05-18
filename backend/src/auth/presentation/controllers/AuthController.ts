@@ -31,7 +31,7 @@ import { RegisterDto } from '../dto/RegisterDto';
 import { AuthorizeQueryDto } from '../dto/AuthorizeQueryDto';
 import { SubmitAuthorizeDto } from '../dto/SubmitAuthorizeDto';
 import { TokenDto } from '../dto/TokenDto';
-import { OAuthService } from '../../infrastructure/oauth/OAuthService';
+import { OAUTH_SERVICE, type IOAuthService } from '../../domain/services/IOAuthService';
 import { OAuthGuard } from '../guards/OAuthGuard';
 import { ScopesGuard } from '../guards/ScopesGuard';
 import { RolesGuard } from '../guards/RolesGuard';
@@ -48,7 +48,7 @@ export class AuthController {
   constructor(
     @Inject(COMMAND_BUS) private readonly commandBus: ICommandBus,
     @Inject(QUERY_BUS) private readonly queryBus: IQueryBus,
-    private readonly oauthService: OAuthService,
+    @Inject(OAUTH_SERVICE) private readonly oauthService: IOAuthService,
   ) {}
 
   @Post('register')

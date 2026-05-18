@@ -1,6 +1,6 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import type { Request } from 'express';
-import { OAuthService } from '../../infrastructure/oauth/OAuthService';
+import { OAUTH_SERVICE, type IOAuthService } from '../../domain/services/IOAuthService';
 import type { RoleEnum } from '../../domain/value-objects/Role';
 
 export interface AuthenticatedRequest extends Request {
@@ -13,7 +13,7 @@ export interface AuthenticatedRequest extends Request {
 
 @Injectable()
 export class OAuthGuard implements CanActivate {
-  constructor(private readonly oauthService: OAuthService) {}
+  constructor(@Inject(OAUTH_SERVICE) private readonly oauthService: IOAuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request & { user?: AuthenticatedRequest['user'] }>();
